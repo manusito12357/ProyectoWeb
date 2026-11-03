@@ -1,0 +1,6 @@
+# Visual Studio
+.vs/
+[Oo]bj/
+[Bb]in/
+*.user
+*.suo

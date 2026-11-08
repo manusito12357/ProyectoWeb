@@ -1,0 +1,47 @@
+@model proyectoweb.Models.Curso
+
+@{
+    ViewData["Title"] = "Detalles del curso";
+}
+
+<h1>@Model.Titulo</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Descripcion)</dt>
+    <dd class="col-sm-9">@Model.Descripcion</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Categoria)</dt>
+    <dd class="col-sm-9">@Model.Categoria?.Nombre</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nivel)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.Nivel)</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DuracionMinutos)</dt>
+    <dd class="col-sm-9">@Model.DuracionMinutos</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ImagenUrl)</dt>
+    <dd class="col-sm-9">@Model.ImagenUrl</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Publicado)</dt>
+    <dd class="col-sm-9">@(Model.Publicado ? "Publicado" : "Borrador")</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FechaCreacion)</dt>
+    <dd class="col-sm-9">@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+</dl>
+
+<h4>Lecciones</h4>
+@if (Model.Lecciones == null || !Model.Lecciones.Any())
+{
+    <p>Este curso todavía no tiene lecciones.</p>
+}
+else
+{
+    <ol>
+        @foreach (var leccion in Model.Lecciones)
+        {
+            <li>@leccion.Titulo</li>
+        }
+    </ol>
+}
+
+<div>
+    <a asp-controller="Lecciones" asp-action="Create" asp-route-cursoId="@Model.Id" class="btn btn-primary">Agregar lección</a>
+    <a asp-controller="Lecciones" asp-action="Index" asp-route-cursoId="@Model.Id" class="btn btn-outline-secondary">Administrar lecciones</a>
+    <a asp-action="Inscritos" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Ver inscritos</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-link">Editar</a>
+    <a asp-action="Index" class="btn btn-link">Volver a la lista</a>
+</div>

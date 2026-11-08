@@ -1,0 +1,41 @@
+@model IEnumerable<proyectoweb.Models.InscritoCurso>
+
+@{
+    var curso = (Curso)ViewData["Curso"]!;
+    var totalLecciones = (int)ViewData["TotalLecciones"]!;
+    ViewData["Title"] = "Inscritos";
+}
+
+<h1>Inscritos en @curso.Titulo</h1>
+<p class="text-muted">@Model.Count() inscritos &middot; @totalLecciones lecciones</p>
+
+@if (!Model.Any())
+{
+    <p>Todavía no hay inscritos en este curso.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Suscriptor</th>
+                <th>Inscrito el</th>
+                <th>Progreso</th>
+                <th>Terminó el</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var item in Model) {
+            var porcentaje = totalLecciones == 0 ? 0 : item.Completadas * 100 / totalLecciones;
+            <tr>
+                <td>@item.Email</td>
+                <td>@item.FechaInscripcion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Completadas de @totalLecciones (@porcentaje%)</td>
+                <td>@(item.FechaFinalizacion?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+            </tr>
+}
+        </tbody>
+    </table>
+}
+
+<a asp-action="Index" class="btn btn-link">Volver a cursos</a>

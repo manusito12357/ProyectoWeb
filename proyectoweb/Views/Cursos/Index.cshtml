@@ -1,0 +1,44 @@
+@model IEnumerable<proyectoweb.Models.Curso>
+
+@{
+    ViewData["Title"] = "Cursos";
+}
+
+<h1>Cursos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo curso</a>
+</p>
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+            <th>@Html.DisplayNameFor(model => model.Categoria)</th>
+            <th>@Html.DisplayNameFor(model => model.Nivel)</th>
+            <th>@Html.DisplayNameFor(model => model.DuracionMinutos)</th>
+            <th>@Html.DisplayNameFor(model => model.Publicado)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.Titulo</td>
+            <td>@item.Categoria?.Nombre</td>
+            <td>@Html.DisplayFor(modelItem => item.Nivel)</td>
+            <td>@item.DuracionMinutos</td>
+            <td>@(item.Publicado ? "Publicado" : "Borrador")</td>
+            <td class="text-nowrap">
+                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-controller="Lecciones" asp-action="Index" asp-route-cursoId="@item.Id">Lecciones</a> |
+                <a asp-action="Inscritos" asp-route-id="@item.Id">Inscritos (@(item.Inscripciones?.Count ?? 0))</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                <form asp-action="CambiarPublicacion" asp-route-id="@item.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">@(item.Publicado ? "Despublicar" : "Publicar")</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

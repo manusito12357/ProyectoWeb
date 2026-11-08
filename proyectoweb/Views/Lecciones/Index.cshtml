@@ -1,0 +1,54 @@
+@model IEnumerable<proyectoweb.Models.Leccion>
+
+@{
+    var curso = ViewData["Curso"] as Curso;
+    ViewData["Title"] = "Lecciones";
+}
+
+<h1>Lecciones@(curso != null ? " de " + curso.Titulo : "")</h1>
+
+<p>
+    <a asp-action="Create" asp-route-cursoId="@curso?.Id" class="btn btn-primary">Nueva lección</a>
+    @if (curso != null)
+    {
+        <a asp-controller="Cursos" asp-action="Index" class="btn btn-link">Volver a cursos</a>
+    }
+</p>
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Orden)</th>
+            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+            @if (curso == null)
+            {
+                <th>@Html.DisplayNameFor(model => model.Curso)</th>
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.Orden</td>
+            <td>@item.Titulo</td>
+            @if (curso == null)
+            {
+                <td>@item.Curso?.Titulo</td>
+            }
+            <td class="text-nowrap">
+                <form asp-action="Mover" asp-route-id="@item.Id" method="post" class="d-inline">
+                    <input type="hidden" name="direccion" value="-1" />
+                    <button type="submit" class="btn btn-sm btn-outline-secondary" title="Subir">&uarr;</button>
+                </form>
+                <form asp-action="Mover" asp-route-id="@item.Id" method="post" class="d-inline">
+                    <input type="hidden" name="direccion" value="1" />
+                    <button type="submit" class="btn btn-sm btn-outline-secondary" title="Bajar">&darr;</button>
+                </form>
+                <a asp-action="Details" asp-route-id="@item.Id" class="ms-2">Detalles</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

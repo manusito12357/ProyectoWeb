@@ -1,0 +1,23 @@
+@model proyectoweb.Models.Leccion
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3">
+    <label asp-for="CursoId" class="form-label"></label>
+    <select asp-for="CursoId" class="form-select" asp-items="ViewBag.CursoId"></select>
+    <span asp-validation-for="CursoId" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Titulo" class="form-label"></label>
+    <input asp-for="Titulo" class="form-control" />
+    <span asp-validation-for="Titulo" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Contenido" class="form-label"></label>
+    <textarea asp-for="Contenido" class="form-control" rows="10"></textarea>
+    <span asp-validation-for="Contenido" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Orden" class="form-label"></label>
+    <input asp-for="Orden" class="form-control" />
+    <span asp-validation-for="Orden" class="text-danger"></span>
+</div>

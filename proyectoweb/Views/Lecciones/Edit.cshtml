@@ -1,0 +1,22 @@
+@model proyectoweb.Models.Leccion
+
+@{
+    ViewData["Title"] = "Editar lección";
+}
+
+<h1>Editar lección</h1>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <partial name="_CamposLeccion" />
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+            <a asp-action="Index" asp-route-cursoId="@Model.CursoId" class="btn btn-link">Volver a la lista</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,45 @@
+@model proyectoweb.Models.Leccion
+
+@{
+    ViewData["Title"] = Model.Titulo;
+    var anterior = ViewData["Anterior"] as int?;
+    var siguiente = ViewData["Siguiente"] as int?;
+    var completada = ViewData["Completada"] is true;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Mis cursos</a></li>
+        <li class="breadcrumb-item"><a asp-action="Curso" asp-route-id="@Model.CursoId">@Model.Curso?.Titulo</a></li>
+        <li class="breadcrumb-item active">@Model.Titulo</li>
+    </ol>
+</nav>
+
+<h1>@Model.Titulo</h1>
+
+<div class="my-4">
+    @Html.Raw(Model.Contenido)
+</div>
+
+@if (completada)
+{
+    <p><span class="badge bg-success">Lección completada</span></p>
+}
+else
+{
+    <form asp-action="Completar" asp-route-id="@Model.Id" method="post" class="mb-3">
+        <button type="submit" class="btn btn-success">Marcar como completada</button>
+    </form>
+}
+
+<div>
+    @if (anterior != null)
+    {
+        <a asp-action="Leccion" asp-route-id="@anterior" class="btn btn-outline-secondary">Anterior</a>
+    }
+    @if (siguiente != null)
+    {
+        <a asp-action="Leccion" asp-route-id="@siguiente" class="btn btn-outline-secondary">Siguiente</a>
+    }
+    <a asp-action="Curso" asp-route-id="@Model.CursoId" class="btn btn-link">Volver al curso</a>
+</div>

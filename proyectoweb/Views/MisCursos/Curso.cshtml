@@ -1,0 +1,31 @@
+@model proyectoweb.Models.ProgresoCurso
+
+@{
+    var curso = Model.Curso;
+    var completadas = (HashSet<int>)ViewData["Completadas"]!;
+    ViewData["Title"] = curso.Titulo;
+}
+
+<h1>@curso.Titulo</h1>
+<p>@curso.Descripcion</p>
+
+<p class="text-muted mb-1">@Model.Completadas de @Model.Total lecciones completadas</p>
+<div class="progress mb-4">
+    <div class="progress-bar" role="progressbar" style="width: @(Model.Porcentaje)%">@Model.Porcentaje%</div>
+</div>
+
+<h4>Lecciones</h4>
+<ol class="list-group list-group-numbered mb-4">
+    @foreach (var leccion in curso.Lecciones!)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
+            @if (completadas.Contains(leccion.Id))
+            {
+                <span class="badge bg-success">Completada</span>
+            }
+        </li>
+    }
+</ol>
+
+<a asp-action="Index" class="btn btn-link">Volver a mis cursos</a>

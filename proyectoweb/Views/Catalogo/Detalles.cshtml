@@ -1,0 +1,67 @@
+@model proyectoweb.Models.Curso
+
+@{
+    ViewData["Title"] = Model.Titulo;
+    var inscrito = ViewData["Inscrito"] is true;
+}
+
+@if (!Model.Publicado)
+{
+    <div class="alert alert-warning">Este curso está en borrador. Solo lo ves tú como administrador.</div>
+}
+
+<h1>@Model.Titulo</h1>
+<p class="text-muted">
+    @Model.Categoria?.Nombre &middot; @Html.DisplayFor(model => model.Nivel) &middot; @Model.DuracionMinutos minutos
+</p>
+
+<p>@Model.Descripcion</p>
+
+<h4>Contenido del curso</h4>
+@if (Model.Lecciones == null || !Model.Lecciones.Any())
+{
+    <p>Este curso todavía no tiene lecciones.</p>
+}
+else
+{
+    <ol class="list-group list-group-numbered mb-4">
+        @foreach (var leccion in Model.Lecciones)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                @if (inscrito)
+                {
+                    <a asp-controller="MisCursos" asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
+                }
+                else
+                {
+                    @leccion.Titulo
+                    <span class="badge bg-secondary">Bloqueada</span>
+                }
+            </li>
+        }
+    </ol>
+}
+
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <div class="alert alert-info">
+        Para inscribirte y leer las lecciones,
+        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Detalles", "Catalogo", new { id = Model.Id })">inicia sesión</a>
+        o <a asp-area="Identity" asp-page="/Account/Register">regístrate</a>.
+    </div>
+}
+else if (inscrito)
+{
+    <div class="alert alert-success">
+        Ya estás inscrito en este curso.
+        <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="alert-link">Ir al curso</a>
+    </div>
+}
+else if (User.IsInRole("Suscriptor") && Model.Publicado)
+{
+    <form asp-action="Inscribirse" asp-route-id="@Model.Id" method="post">
+        <button type="submit" class="btn btn-primary">Inscribirme gratis</button>
+    </form>
+}
+
+<a asp-action="Index" class="btn btn-link">Volver al catálogo</a>

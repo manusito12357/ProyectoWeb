@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
+    .AddErrorDescriber<ErroresIdentityEspanol>()
     .AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
@@ -37,6 +38,11 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Catalogo}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    await DbInicializador.InicializarAsync(scope.ServiceProvider, app.Configuration);
+}
 
 app.Run();

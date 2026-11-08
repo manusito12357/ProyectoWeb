@@ -310,7 +310,8 @@ namespace proyectoweb.Migrations
 
                     b.HasIndex("CursoId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "CursoId")
+                        .IsUnique();
 
                     b.ToTable("Inscripciones");
                 });
@@ -367,7 +368,8 @@ namespace proyectoweb.Migrations
 
                     b.HasIndex("LeccionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "LeccionId")
+                        .IsUnique();
 
                     b.ToTable("LeccionesCompletadas");
                 });

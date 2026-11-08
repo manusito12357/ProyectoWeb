@@ -22,6 +22,19 @@ namespace proyectoweb.Data
                 .HasOne(c => c.Categoria)
                 .WithMany(cat => cat.Cursos)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Inscripcion>()
+                .HasIndex(i => new { i.UserId, i.CursoId })
+                .IsUnique();
+
+            builder.Entity<LeccionCompletada>()
+                .HasIndex(l => new { l.UserId, l.LeccionId })
+                .IsUnique();
+        }
+
+        public Task<bool> EstaInscrito(string userId, int cursoId)
+        {
+            return Inscripciones.AnyAsync(i => i.UserId == userId && i.CursoId == cursoId);
         }
     }
 }

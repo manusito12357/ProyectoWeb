@@ -105,6 +105,34 @@ a:hover {
   box-shadow: 0 6px 16px rgba(31, 41, 55, 0.1);
 }
 
+.portada {
+  margin-bottom: 2rem;
+  padding: 2rem 1.5rem;
+  border-radius: 0.75rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--azul-oscuro), #56a0f5);
+}
+
+.portada h1 {
+  margin-bottom: 0.5rem;
+}
+
+.card-portada {
+  height: 8rem;
+  object-fit: cover;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.card-portada-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--azul), #8ab9f5);
+}
+
 .card-footer {
   background-color: transparent;
   border-top-color: var(--borde);

@@ -4,7 +4,12 @@
     ViewData["Title"] = "Catálogo de cursos";
 }
 
-<h1>Catálogo de cursos</h1>
+<section class="portada">
+    <h1>Aprende a tu ritmo</h1>
+    <p class="lead mb-0">Microcursos y tutoriales técnicos con lecciones cortas. Inscríbete gratis y sigue tu progreso.</p>
+</section>
+
+<h2 class="h4 mb-3">Catálogo de cursos</h2>
 
 <form asp-action="Index" method="get" class="row g-2 mb-4">
     <div class="col-auto">
@@ -26,19 +31,33 @@ else
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var curso in Model)
         {
+            var colorNivel = curso.Nivel switch
+            {
+                NivelCurso.Basico => "bg-success",
+                NivelCurso.Intermedio => "bg-warning text-dark",
+                _ => "bg-danger"
+            };
+
             <div class="col">
                 <div class="card h-100">
                     @if (!string.IsNullOrEmpty(curso.ImagenUrl))
                     {
-                        <img src="@curso.ImagenUrl" class="card-img-top" alt="@curso.Titulo" />
+                        <img src="@curso.ImagenUrl" class="card-img-top card-portada" alt="@curso.Titulo" />
+                    }
+                    else
+                    {
+                        <div class="card-portada card-portada-inicial">@curso.Titulo.Substring(0, 1).ToUpper()</div>
                     }
                     <div class="card-body">
                         <h5 class="card-title">@curso.Titulo</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@curso.Categoria?.Nombre</h6>
+                        <h6 class="card-subtitle mb-2 text-muted text-capitalize">@curso.Categoria?.Nombre</h6>
                         <p class="card-text">@(curso.Descripcion.Length > 140 ? curso.Descripcion[..140] + "..." : curso.Descripcion)</p>
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
-                        <small class="text-muted">@Html.DisplayFor(modelItem => curso.Nivel) &middot; @curso.DuracionMinutos min</small>
+                        <small>
+                            <span class="badge @colorNivel">@Html.DisplayFor(modelItem => curso.Nivel)</span>
+                            <span class="text-muted ms-1">@curso.DuracionMinutos min</span>
+                        </small>
                         <a asp-action="Detalles" asp-route-id="@curso.Id" class="btn btn-sm btn-primary">Ver curso</a>
                     </div>
                 </div>

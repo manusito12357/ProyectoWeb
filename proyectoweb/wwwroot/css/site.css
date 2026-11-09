@@ -1,3 +1,11 @@
+:root {
+  --azul: #2f80ed;
+  --azul-oscuro: #1f6fd8;
+  --fondo: #f4f7fb;
+  --texto: #1f2937;
+  --borde: #e3e8ef;
+}
+
 html {
   font-size: 14px;
 }
@@ -19,4 +27,133 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: var(--fondo);
+  color: var(--texto);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 600;
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--azul-oscuro);
+}
+
+a:hover {
+  color: #1858ad;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--azul-oscuro) !important;
+}
+
+.navbar .nav-link:hover {
+  color: var(--azul) !important;
+}
+
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.btn-primary {
+  background-color: var(--azul);
+  border-color: var(--azul);
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.active {
+  background-color: var(--azul-oscuro);
+  border-color: var(--azul-oscuro);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--azul);
+  border-color: var(--azul);
+}
+
+.form-control,
+.form-select {
+  border-radius: 0.5rem;
+  border-color: #cbd5e1;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 0.2rem rgba(47, 128, 237, 0.2);
+}
+
+.card {
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(31, 41, 55, 0.1);
+}
+
+.card-footer {
+  background-color: transparent;
+  border-top-color: var(--borde);
+}
+
+.table {
+  background-color: #fff;
+  border-color: var(--borde);
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.75rem;
+}
+
+.table thead th {
+  color: #475569;
+  font-weight: 600;
+}
+
+.list-group-item {
+  border-color: var(--borde);
+}
+
+.list-group-numbered > .list-group-item {
+  justify-content: flex-start;
+}
+
+.list-group-numbered > .list-group-item::before {
+  margin-right: 0.5rem;
+}
+
+.list-group-numbered > .list-group-item .badge {
+  margin-left: auto;
+}
+
+.progress {
+  height: 1.25rem;
+  border-radius: 0.5rem;
+}
+
+.progress-bar {
+  background-color: var(--azul);
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: #fff;
 }

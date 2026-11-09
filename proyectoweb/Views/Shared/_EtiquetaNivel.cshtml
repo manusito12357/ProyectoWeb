@@ -1,0 +1,11 @@
+@model NivelCurso
+
+@{
+    var color = Model switch
+    {
+        NivelCurso.Basico => "bg-success",
+        NivelCurso.Intermedio => "bg-warning text-dark",
+        _ => "bg-danger"
+    };
+}
+<span class="badge @color">@Html.DisplayFor(m => m)</span>

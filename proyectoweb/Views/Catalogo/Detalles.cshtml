@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = Model.Titulo;
     var inscrito = ViewData["Inscrito"] is true;
+    var lecciones = Model.Lecciones ?? new List<Leccion>();
 }
 
 @if (!Model.Publicado)
@@ -10,58 +11,71 @@
     <div class="alert alert-warning">Este curso está en borrador. Solo lo ves tú como administrador.</div>
 }
 
-<h1>@Model.Titulo</h1>
-<p class="text-muted">
-    @Model.Categoria?.Nombre &middot; @Html.DisplayFor(model => model.Nivel) &middot; @Model.DuracionMinutos minutos
-</p>
+<div class="row g-4">
+    <div class="col-lg-4 order-first order-lg-last">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-unstyled mb-4">
+                    <li class="mb-2"><strong>Categoría:</strong> <span class="text-capitalize">@Model.Categoria?.Nombre</span></li>
+                    <li class="mb-2"><strong>Nivel:</strong> <partial name="_EtiquetaNivel" model="Model.Nivel" /></li>
+                    <li class="mb-2"><strong>Duración:</strong> @Model.DuracionMinutos minutos</li>
+                    <li><strong>Lecciones:</strong> @lecciones.Count</li>
+                </ul>
 
-<p>@Model.Descripcion</p>
+                @if (User.Identity?.IsAuthenticated != true)
+                {
+                    <p class="text-muted">Para inscribirte y leer las lecciones necesitas una cuenta.</p>
+                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Detalles", "Catalogo", new { id = Model.Id })" class="btn btn-primary w-100 mb-2">Iniciar sesión</a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-secondary w-100">Registrarme</a>
+                }
+                else if (inscrito)
+                {
+                    <p class="text-success">Ya estás inscrito en este curso.</p>
+                    <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="btn btn-primary w-100">Ir al curso</a>
+                }
+                else if (User.IsInRole("Suscriptor") && Model.Publicado)
+                {
+                    <form asp-action="Inscribirse" asp-route-id="@Model.Id" method="post">
+                        <button type="submit" class="btn btn-primary w-100">Inscribirme gratis</button>
+                    </form>
+                }
+                else if (User.IsInRole("Administrador"))
+                {
+                    <a asp-controller="Cursos" asp-action="Inscritos" asp-route-id="@Model.Id" class="btn btn-outline-secondary w-100">Ver inscritos</a>
+                }
+            </div>
+        </div>
+    </div>
 
-<h4>Contenido del curso</h4>
-@if (Model.Lecciones == null || !Model.Lecciones.Any())
-{
-    <p>Este curso todavía no tiene lecciones.</p>
-}
-else
-{
-    <ol class="list-group list-group-numbered mb-4">
-        @foreach (var leccion in Model.Lecciones)
+    <div class="col-lg-8">
+        <h1>@Model.Titulo</h1>
+        <p class="lead">@Model.Descripcion</p>
+
+        <h4 class="mt-4">Contenido del curso</h4>
+        @if (!lecciones.Any())
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                @if (inscrito)
-                {
-                    <a asp-controller="MisCursos" asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
-                }
-                else
-                {
-                    @leccion.Titulo
-                    <span class="badge bg-secondary">Bloqueada</span>
-                }
-            </li>
+            <p>Este curso todavía no tiene lecciones.</p>
         }
-    </ol>
-}
+        else
+        {
+            <ol class="list-group list-group-numbered mb-4">
+                @foreach (var leccion in lecciones)
+                {
+                    <li class="list-group-item d-flex align-items-center">
+                        @if (inscrito)
+                        {
+                            <a asp-controller="MisCursos" asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
+                        }
+                        else
+                        {
+                            @leccion.Titulo
+                            <span class="badge bg-secondary">Bloqueada</span>
+                        }
+                    </li>
+                }
+            </ol>
+        }
 
-@if (User.Identity?.IsAuthenticated != true)
-{
-    <div class="alert alert-info">
-        Para inscribirte y leer las lecciones,
-        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Detalles", "Catalogo", new { id = Model.Id })">inicia sesión</a>
-        o <a asp-area="Identity" asp-page="/Account/Register">regístrate</a>.
+        <a asp-action="Index" class="btn btn-link ps-0">Volver al catálogo</a>
     </div>
-}
-else if (inscrito)
-{
-    <div class="alert alert-success">
-        Ya estás inscrito en este curso.
-        <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="alert-link">Ir al curso</a>
-    </div>
-}
-else if (User.IsInRole("Suscriptor") && Model.Publicado)
-{
-    <form asp-action="Inscribirse" asp-route-id="@Model.Id" method="post">
-        <button type="submit" class="btn btn-primary">Inscribirme gratis</button>
-    </form>
-}
-
-<a asp-action="Index" class="btn btn-link">Volver al catálogo</a>
+</div>

@@ -37,7 +37,16 @@ namespace proyectoweb.Controllers
             ViewData["Buscar"] = buscar;
             ViewData["Filtrado"] = categoriaId != null || !string.IsNullOrEmpty(buscar);
 
-            return View(await cursos.OrderByDescending(c => c.FechaCreacion).ToListAsync());
+            var lista = await cursos.OrderByDescending(c => c.FechaCreacion).ToListAsync();
+
+            var ids = lista.Select(c => c.Id).ToList();
+            ViewData["Lecciones"] = await _context.Lecciones
+                .Where(l => ids.Contains(l.CursoId))
+                .GroupBy(l => l.CursoId)
+                .Select(g => new { CursoId = g.Key, Cantidad = g.Count() })
+                .ToDictionaryAsync(g => g.CursoId, g => g.Cantidad);
+
+            return View(lista);
         }
 
         public async Task<IActionResult> Detalles(int? id)

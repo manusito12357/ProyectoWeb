@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Catálogo de cursos";
     var lecciones = (Dictionary<int, int>)ViewData["Lecciones"]!;
+    var pagina = (int)ViewData["Pagina"]!;
+    var totalPaginas = (int)ViewData["TotalPaginas"]!;
 
     string TextoLecciones(int cantidad) => cantidad switch
     {
@@ -70,4 +72,24 @@ else
             </div>
         }
     </div>
+
+    @if (totalPaginas > 1)
+    {
+        <nav class="mt-4" aria-label="Páginas del catálogo">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(pagina == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pagina="@(pagina - 1)" asp-route-buscar="@ViewData["Buscar"]" asp-route-categoriaId="@ViewData["CategoriaId"]">Anterior</a>
+                </li>
+                @for (var i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == pagina ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pagina="@i" asp-route-buscar="@ViewData["Buscar"]" asp-route-categoriaId="@ViewData["CategoriaId"]">@i</a>
+                    </li>
+                }
+                <li class="page-item @(pagina == totalPaginas ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pagina="@(pagina + 1)" asp-route-buscar="@ViewData["Buscar"]" asp-route-categoriaId="@ViewData["CategoriaId"]">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    }
 }

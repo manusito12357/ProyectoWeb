@@ -11,6 +11,8 @@ namespace proyectoweb.Controllers
     [AllowAnonymous]
     public class CatalogoController : Controller
     {
+        private const int CursosPorPagina = 9;
+
         private readonly AppDbContext _context;
 
         public CatalogoController(AppDbContext context)
@@ -18,7 +20,7 @@ namespace proyectoweb.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int? categoriaId, string? buscar)
+        public async Task<IActionResult> Index(int? categoriaId, string? buscar, int pagina = 1)
         {
             buscar = buscar?.Trim();
 
@@ -37,7 +39,19 @@ namespace proyectoweb.Controllers
             ViewData["Buscar"] = buscar;
             ViewData["Filtrado"] = categoriaId != null || !string.IsNullOrEmpty(buscar);
 
-            var lista = await cursos.OrderByDescending(c => c.FechaCreacion).ToListAsync();
+            var total = await cursos.CountAsync();
+            var totalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)CursosPorPagina));
+            pagina = Math.Clamp(pagina, 1, totalPaginas);
+            ViewData["Pagina"] = pagina;
+            ViewData["TotalPaginas"] = totalPaginas;
+            ViewData["CategoriaId"] = categoriaId;
+
+            var lista = await cursos
+                .OrderByDescending(c => c.FechaCreacion)
+                .ThenBy(c => c.Id)
+                .Skip((pagina - 1) * CursosPorPagina)
+                .Take(CursosPorPagina)
+                .ToListAsync();
 
             var ids = lista.Select(c => c.Id).ToList();
             ViewData["Lecciones"] = await _context.Lecciones

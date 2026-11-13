@@ -46,5 +46,21 @@ namespace proyectoweb.Models
 
         public ICollection<Leccion>? Lecciones { get; set; }
         public ICollection<Inscripcion>? Inscripciones { get; set; }
+
+        private static readonly HashSet<string> PalabrasComunes = new()
+        {
+            "introducción", "curso", "del", "de", "la", "el", "a", "al", "lenguaje", "y", "en", "con", "para", "desde"
+        };
+
+        [NotMapped]
+        public string Iniciales
+        {
+            get
+            {
+                var palabras = Titulo.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var clave = palabras.FirstOrDefault(p => !PalabrasComunes.Contains(p.ToLower())) ?? palabras[0];
+                return clave.Length < 2 ? clave.ToUpper() : char.ToUpper(clave[0]) + clave.Substring(1, 1);
+            }
+        }
     }
 }

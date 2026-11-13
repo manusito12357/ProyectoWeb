@@ -12,80 +12,80 @@
     <div class="alert alert-warning">Este curso está en borrador. Solo lo ves tú como administrador.</div>
 }
 
-<div class="row g-4">
-    <div class="col-lg-4 order-first order-lg-last">
-        <div class="card">
-            <div class="card-body">
-                <ul class="list-unstyled mb-4">
-                    <li class="mb-2"><strong>Categoría:</strong> <span class="text-capitalize">@Model.Categoria?.Nombre</span></li>
-                    <li class="mb-2"><strong>Nivel:</strong> <partial name="_EtiquetaNivel" model="Model.Nivel" /></li>
-                    <li class="mb-2"><strong>Duración:</strong> @Model.DuracionMinutos minutos</li>
-                    <li><strong>Lecciones:</strong> @lecciones.Count</li>
-                </ul>
+<nav class="ruta" aria-label="Ruta">
+    <a asp-action="Index">Catálogo</a>
+    <span aria-hidden="true">/</span>
+    <a asp-action="Index" asp-route-categoriaId="@Model.CategoriaId" class="text-capitalize">@Model.Categoria?.Nombre</a>
+</nav>
 
-                @if (User.Identity?.IsAuthenticated != true)
-                {
-                    <p class="text-muted">Para inscribirte y leer las lecciones necesitas una cuenta.</p>
-                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Detalles", "Catalogo", new { id = Model.Id })" class="btn btn-primary w-100 mb-2">Iniciar sesión</a>
-                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-secondary w-100">Registrarme</a>
-                }
-                else if (inscrito)
-                {
-                    <p class="text-success">
-                        @if (terminado)
-                        {
-                            <span class="badge bg-success me-1">Terminado</span><text>Ya completaste este curso.</text>
-                        }
-                        else
-                        {
-                            <text>Ya estás inscrito en este curso.</text>
-                        }
-                    </p>
-                    <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="btn btn-primary w-100">@(terminado ? "Repasar el curso" : "Ir al curso")</a>
-                }
-                else if (User.IsInRole("Suscriptor") && Model.Publicado)
-                {
-                    <form asp-action="Inscribirse" asp-route-id="@Model.Id" method="post">
-                        <button type="submit" class="btn btn-primary w-100">Inscribirme gratis</button>
-                    </form>
-                }
-                else if (User.IsInRole("Administrador"))
-                {
-                    <a asp-controller="Cursos" asp-action="Inscritos" asp-route-id="@Model.Id" class="btn btn-outline-secondary w-100">Ver inscritos</a>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-8">
+<div class="detalle">
+    <div>
         <h1>@Model.Titulo</h1>
-        <p class="lead">@Model.Descripcion</p>
+        <div class="datos-curso">
+            <partial name="_MedidorNivel" model="Model.Nivel" />
+            <span>@Model.DuracionMinutos min</span>
+            <span>@(lecciones.Count == 1 ? "1 lección" : lecciones.Count + " lecciones")</span>
+        </div>
+        <p class="descripcion-detalle">@Model.Descripcion</p>
 
-        <h4 class="mt-4">Contenido del curso</h4>
+        <h2 class="h4 mt-4">Contenido del curso</h2>
         @if (!lecciones.Any())
         {
             <p>Este curso todavía no tiene lecciones.</p>
         }
         else
         {
-            <ol class="list-group list-group-numbered mb-4">
+            <ol class="lista-lecciones">
                 @foreach (var leccion in lecciones)
                 {
-                    <li class="list-group-item d-flex align-items-center">
+                    <li>
                         @if (inscrito)
                         {
                             <a asp-controller="MisCursos" asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
                         }
                         else
                         {
-                            @leccion.Titulo
-                            <span class="badge bg-secondary">Bloqueada</span>
+                            <span>@leccion.Titulo</span>
+                            <span class="bloqueada">Bloqueada</span>
                         }
                     </li>
                 }
             </ol>
         }
-
-        <a asp-action="Index" class="btn btn-link ps-0">Volver al catálogo</a>
     </div>
+
+    <aside class="tarjeta-detalle">
+        <div class="imagen-curso color-@(Model.Id % 5)">
+            <span>@Model.Iniciales</span>
+            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+            {
+                <img src="@Model.ImagenUrl" alt="" onerror="this.remove()" />
+            }
+        </div>
+
+        <div class="p-3">
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <p class="text-muted">Para inscribirte y leer las lecciones necesitas una cuenta.</p>
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-destacado w-100 mb-2">Crear cuenta</a>
+                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Detalles", "Catalogo", new { id = Model.Id })" class="btn btn-outline-secondary w-100">Iniciar sesión</a>
+            }
+            else if (inscrito)
+            {
+                <p class="estado-curso @(terminado ? "terminado" : "")">@(terminado ? "Ya completaste este curso." : "Ya estás inscrito en este curso.")</p>
+                <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="btn @(terminado ? "btn-outline-secondary" : "btn-destacado") w-100">@(terminado ? "Repasar el curso" : "Ir al curso")</a>
+            }
+            else if (User.IsInRole("Suscriptor") && Model.Publicado)
+            {
+                <p class="estado-curso">Gratis, a tu ritmo.</p>
+                <form asp-action="Inscribirse" asp-route-id="@Model.Id" method="post">
+                    <button type="submit" class="btn btn-destacado w-100">Inscribirme gratis</button>
+                </form>
+            }
+            else if (User.IsInRole("Administrador"))
+            {
+                <a asp-controller="Cursos" asp-action="Inscritos" asp-route-id="@Model.Id" class="btn btn-outline-secondary w-100">Ver inscritos</a>
+            }
+        </div>
+    </aside>
 </div>

@@ -642,6 +642,109 @@ a:focus-visible,
   }
 }
 
+/* Detalle del curso */
+
+.ruta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+
+.ruta a {
+  color: var(--pino);
+}
+
+.detalle {
+  display: grid;
+  grid-template-columns: 1fr 20rem;
+  gap: 2rem;
+  align-items: start;
+}
+
+.descripcion-detalle {
+  max-width: 65ch;
+  color: #2b3836;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.2rem;
+  line-height: 1.65;
+}
+
+.lista-lecciones {
+  max-width: 45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: leccion;
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.lista-lecciones li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  counter-increment: leccion;
+}
+
+.lista-lecciones li + li {
+  border-top: 1px solid var(--borde);
+}
+
+.lista-lecciones li::before {
+  content: counter(leccion);
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background-color: var(--menta);
+  color: var(--pino);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.6rem;
+  text-align: center;
+}
+
+.bloqueada {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.tarjeta-detalle {
+  position: sticky;
+  top: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.tarjeta-detalle .imagen-curso {
+  height: 10rem;
+  border-radius: 0;
+}
+
+@media (max-width: 991px) {
+  .detalle {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjeta-detalle {
+    position: static;
+    order: -1;
+  }
+
+  .tarjeta-detalle .imagen-curso {
+    height: 7rem;
+  }
+}
+
 /* Pie de página */
 
 .footer {

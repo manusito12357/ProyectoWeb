@@ -131,7 +131,7 @@
                     var curso = fila.Curso;
                     <article class="fila-curso">
                         <div class="imagen-curso color-@(curso.Id % 5)">
-                            <span>@fila.Iniciales</span>
+                            <span>@curso.Iniciales</span>
                             @if (!string.IsNullOrEmpty(curso.ImagenUrl))
                             {
                                 <img src="@curso.ImagenUrl" alt="" loading="lazy" onerror="this.remove()" />

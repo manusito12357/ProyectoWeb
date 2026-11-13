@@ -107,11 +107,6 @@ namespace proyectoweb.Models
 
     public class CursoCatalogo
     {
-        private static readonly HashSet<string> PalabrasComunes = new()
-        {
-            "introducción", "curso", "del", "de", "la", "el", "a", "al", "lenguaje", "y", "en", "con", "para", "desde"
-        };
-
         public Curso Curso { get; set; } = null!;
         public int Lecciones { get; set; }
         public int Completadas { get; set; }
@@ -119,16 +114,6 @@ namespace proyectoweb.Models
         public bool Terminado { get; set; }
 
         public int Porcentaje => Lecciones == 0 ? 0 : Completadas * 100 / Lecciones;
-
-        public string Iniciales
-        {
-            get
-            {
-                var palabras = Curso.Titulo.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                var clave = palabras.FirstOrDefault(p => !PalabrasComunes.Contains(p.ToLower())) ?? palabras[0];
-                return clave.Length < 2 ? clave.ToUpper() : char.ToUpper(clave[0]) + clave.Substring(1, 1);
-            }
-        }
     }
 
     public class CategoriaConteo

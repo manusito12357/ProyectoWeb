@@ -3,7 +3,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav align-items-lg-center gap-lg-2">
+<ul class="navbar-nav align-items-lg-center gap-lg-2 ms-auto borde-sesion">
 @if (SignInManager.IsSignedIn(User))
 {
     var usuario = UserManager.GetUserName(User);
@@ -15,7 +15,9 @@
             <button id="logout" type="submit" class="btn btn-outline-light">Cerrar sesión</button>
         </form>
     </li>
+
 }
+
 else
 {
     <li class="nav-item">

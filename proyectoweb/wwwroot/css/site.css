@@ -947,3 +947,28 @@ summary:focus-visible {
   color: #cfe3df;
   vertical-align: middle;
 }
+
+@media (min-width: 992px) {
+    .borde-sesion {
+        padding-left: 1rem;
+        border-left: 1px solid #3d6f6c;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+}
+.barra-principal #logout {
+    border-color: #4f7b78;
+    color: #cfe3df;
+    font-weight: 500;
+}
+
+.barra-principal #logout:hover {
+    border-color: #7fa8a4;
+    background-color: transparent;
+    color: #fff;
+}
+.barra-principal > .container {
+    max-width: none;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}

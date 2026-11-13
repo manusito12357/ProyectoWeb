@@ -27,6 +27,7 @@ namespace proyectoweb.Models
         [Display(Name = "Duración (minutos)")]
         public int DuracionMinutos { get; set; }
 
+        [RegularExpression(@"^https?://\S+$", ErrorMessage = "Escribe una dirección web válida que empiece por http:// o https://")]
         [Display(Name = "Imagen")]
         public string? ImagenUrl { get; set; }
 

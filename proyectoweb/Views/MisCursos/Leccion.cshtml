@@ -9,42 +9,42 @@
     var total = (int)ViewData["Total"]!;
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Mis cursos</a></li>
-        <li class="breadcrumb-item"><a asp-action="Curso" asp-route-id="@Model.CursoId">@Model.Curso?.Titulo</a></li>
-        <li class="breadcrumb-item active">@Model.Titulo</li>
-    </ol>
+<nav class="ruta" aria-label="Ruta">
+    <a asp-action="Index">Mis cursos</a>
+    <span aria-hidden="true">/</span>
+    <a asp-action="Curso" asp-route-id="@Model.CursoId">@Model.Curso?.Titulo</a>
 </nav>
 
-<p class="text-muted mb-1">Lección @posicion de @total</p>
-<h1>@Model.Titulo</h1>
+<div class="leccion">
+    <p class="text-muted mb-1">Lección @posicion de @total</p>
+    <h1>@Model.Titulo</h1>
 
-<article class="leccion-contenido my-4">
-    @Html.Raw(Model.Contenido)
-</article>
+    <article class="leccion-contenido my-4">
+        @Html.Raw(Model.Contenido)
+    </article>
 
-<div class="mb-4">
-    @if (completada)
-    {
-        <span class="badge bg-success fs-6">Lección completada</span>
-    }
-    else
-    {
-        <form asp-action="Completar" asp-route-id="@Model.Id" method="post">
-            <button type="submit" class="btn btn-success">Marcar como completada</button>
-        </form>
-    }
-</div>
+    <div class="mb-4">
+        @if (completada)
+        {
+            <span class="estado-curso terminado">Lección completada</span>
+        }
+        else
+        {
+            <form asp-action="Completar" asp-route-id="@Model.Id" method="post">
+                <button type="submit" class="btn btn-destacado">Marcar como completada</button>
+            </form>
+        }
+    </div>
 
-<div class="d-flex flex-wrap gap-2 align-items-center">
-    @if (anterior != null)
-    {
-        <a asp-action="Leccion" asp-route-id="@anterior" class="btn btn-outline-secondary">Anterior</a>
-    }
-    @if (siguiente != null)
-    {
-        <a asp-action="Leccion" asp-route-id="@siguiente" class="btn btn-primary">Siguiente</a>
-    }
-    <a asp-action="Curso" asp-route-id="@Model.CursoId" class="btn btn-link">Volver al curso</a>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        @if (anterior != null)
+        {
+            <a asp-action="Leccion" asp-route-id="@anterior" class="btn btn-outline-secondary">Anterior</a>
+        }
+        @if (siguiente != null)
+        {
+            <a asp-action="Leccion" asp-route-id="@siguiente" class="btn btn-primary">Siguiente</a>
+        }
+        <a asp-action="Curso" asp-route-id="@Model.CursoId" class="btn btn-link">Volver al curso</a>
+    </div>
 </div>

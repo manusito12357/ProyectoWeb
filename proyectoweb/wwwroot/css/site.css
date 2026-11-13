@@ -255,14 +255,18 @@ a:focus-visible,
   margin: 0;
 }
 
+.leccion {
+  max-width: 46rem;
+}
+
 .leccion-contenido {
-  max-width: 45rem;
-  padding: 1.5rem;
+  padding: 1.75rem;
   border: 1px solid var(--borde);
   border-radius: 0.75rem;
   background-color: #fff;
-  font-size: 1.05rem;
-  line-height: 1.8;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.2rem;
+  line-height: 1.75;
 }
 
 .leccion-contenido img {
@@ -708,6 +712,20 @@ a:focus-visible,
   font-weight: 600;
   line-height: 1.6rem;
   text-align: center;
+}
+
+.lista-lecciones li.hecha::before {
+  background-color: var(--pino);
+  color: #fff;
+}
+
+.lista-lecciones li.hecha .bloqueada {
+  color: #1f6b3a;
+  font-weight: 600;
+}
+
+.progress-bar.terminado {
+  background-color: #1f6b3a;
 }
 
 .bloqueada {

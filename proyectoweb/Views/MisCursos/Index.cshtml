@@ -4,40 +4,51 @@
     ViewData["Title"] = "Mis cursos";
 }
 
-<h1>Mis cursos</h1>
+<div class="encabezado-lista">
+    <h1>Mis cursos</h1>
+</div>
 
 @if (!Model.Any())
 {
-    <p>Todavía no te has inscrito en ningún curso. <a asp-controller="Catalogo" asp-action="Index">Ver el catálogo</a>.</p>
+    <p>Todavía no te has inscrito en ningún curso.</p>
+    <a asp-controller="Catalogo" asp-action="Index" class="btn btn-destacado">Ver el catálogo</a>
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="lista-cursos">
         @foreach (var item in Model)
         {
+            var curso = item.Curso;
             var terminado = item.Porcentaje == 100;
 
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title mb-0">@item.Curso.Titulo</h5>
-                            <partial name="_EtiquetaNivel" model="item.Curso.Nivel" />
-                        </div>
-                        <p class="text-muted mb-2">
-                            @item.Completadas de @item.Total lecciones completadas
-                            @if (terminado)
-                            {
-                                <span class="badge bg-success ms-1">Terminado</span>
-                            }
-                        </p>
-                        <div class="progress mb-3">
-                            <div class="progress-bar @(terminado ? "bg-success" : "")" role="progressbar" style="width: @(item.Porcentaje)%">@item.Porcentaje%</div>
-                        </div>
-                        <a asp-action="Curso" asp-route-id="@item.Curso.Id" class="btn btn-primary btn-sm">@(terminado ? "Repasar" : "Continuar")</a>
+            <article class="fila-curso">
+                <div class="imagen-curso color-@(curso.Id % 5)">
+                    <span>@curso.Iniciales</span>
+                    @if (!string.IsNullOrEmpty(curso.ImagenUrl))
+                    {
+                        <img src="@curso.ImagenUrl" alt="" loading="lazy" onerror="this.remove()" />
+                    }
+                </div>
+                <div>
+                    <h2 class="titulo-curso"><a asp-action="Curso" asp-route-id="@curso.Id">@curso.Titulo</a></h2>
+                    <div class="datos-curso">
+                        <partial name="_MedidorNivel" model="curso.Nivel" />
+                        <span>@item.Completadas de @item.Total lecciones completadas</span>
                     </div>
                 </div>
-            </div>
+                <div class="lado-curso">
+                    @if (terminado)
+                    {
+                        <span class="estado-curso terminado">Terminado</span>
+                    }
+                    else
+                    {
+                        <span class="estado-curso">En curso, @item.Porcentaje%</span>
+                    }
+                    <div class="progress"><div class="progress-bar @(terminado ? "terminado" : "")" style="width: @(item.Porcentaje)%"></div></div>
+                    <a asp-action="Curso" asp-route-id="@curso.Id" class="btn @(terminado ? "btn-outline-secondary" : "btn-destacado")">@(terminado ? "Repasar" : "Continuar")</a>
+                </div>
+            </article>
         }
     </div>
 }

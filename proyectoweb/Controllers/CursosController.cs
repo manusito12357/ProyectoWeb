@@ -17,13 +17,20 @@ namespace proyectoweb.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoriaId)
         {
             var cursos = _context.Cursos
                 .Include(c => c.Categoria)
                 .Include(c => c.Inscripciones)
-                .OrderBy(c => c.Titulo);
-            return View(await cursos.ToListAsync());
+                .AsQueryable();
+            if (categoriaId != null)
+            {
+                cursos = cursos.Where(c => c.CategoriaId == categoriaId);
+            }
+
+            ViewData["Categorias"] = ListaCategorias(categoriaId);
+            ViewData["CategoriaId"] = categoriaId;
+            return View(await cursos.OrderBy(c => c.Titulo).ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)

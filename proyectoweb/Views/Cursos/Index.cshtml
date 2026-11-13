@@ -9,9 +9,24 @@
     <a asp-action="Create" class="btn btn-primary">Nuevo curso</a>
 </div>
 
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    <div class="col-12 col-md-auto">
+        <select name="categoriaId" class="form-select" asp-items="ViewBag.Categorias">
+            <option value="">Todas las categorías</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
+        @if (ViewData["CategoriaId"] != null)
+        {
+            <a asp-action="Index" class="btn btn-link">Limpiar</a>
+        }
+    </div>
+</form>
+
 @if (!Model.Any())
 {
-    <p>Todavía no hay cursos. Crea el primero con el botón "Nuevo curso".</p>
+    <p>@(ViewData["CategoriaId"] != null ? "No hay cursos en esa categoría." : "Todavía no hay cursos. Crea el primero con el botón \"Nuevo curso\".")</p>
 }
 else
 {

@@ -68,6 +68,7 @@ namespace proyectoweb.Controllers
             {
                 _context.Add(leccion);
                 await _context.SaveChangesAsync();
+                TempData["Exito"] = "Lección creada.";
                 return RedirectToAction(nameof(Index), new { cursoId = leccion.CursoId });
             }
             ViewData["CursoId"] = ListaCursos(leccion.CursoId);
@@ -114,6 +115,7 @@ namespace proyectoweb.Controllers
                     }
                     throw;
                 }
+                TempData["Exito"] = "Lección actualizada.";
                 return RedirectToAction(nameof(Index), new { cursoId = leccion.CursoId });
             }
             ViewData["CursoId"] = ListaCursos(leccion.CursoId);
@@ -174,6 +176,7 @@ namespace proyectoweb.Controllers
 
             _context.Lecciones.Remove(leccion);
             await _context.SaveChangesAsync();
+            TempData["Exito"] = "Lección eliminada.";
             return RedirectToAction(nameof(Index), new { cursoId = leccion.CursoId });
         }
 

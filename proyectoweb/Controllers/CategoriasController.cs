@@ -50,6 +50,7 @@ namespace proyectoweb.Controllers
             {
                 _context.Add(categoria);
                 await _context.SaveChangesAsync();
+                TempData["Exito"] = "Categoría creada.";
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);
@@ -94,6 +95,7 @@ namespace proyectoweb.Controllers
                     }
                     throw;
                 }
+                TempData["Exito"] = "Categoría actualizada.";
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);
@@ -133,6 +135,7 @@ namespace proyectoweb.Controllers
 
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
+            TempData["Exito"] = "Categoría eliminada.";
             return RedirectToAction(nameof(Index));
         }
 

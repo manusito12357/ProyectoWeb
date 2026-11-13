@@ -2,6 +2,17 @@
 
 @{
     ViewData["Title"] = "Catálogo de cursos";
+    var filtro = Model.Filtro;
+    var textosNivel = Html.GetEnumSelectList<NivelCurso>().ToDictionary(i => int.Parse(i.Value), i => i.Text);
+    var nivelesVisibles = Enum.GetValues<NivelCurso>()
+        .Where(n => Model.ConteoNiveles.GetValueOrDefault(n) > 0 || filtro.Niveles.Contains((int)n))
+        .ToList();
+    var duracionesVisibles = FiltroCatalogo.Duraciones
+        .Where(d => Model.ConteoDuraciones.GetValueOrDefault(d.Clave) > 0 || filtro.Duracion == d.Clave)
+        .ToList();
+
+    string Enlace(Action<FiltroCatalogo>? cambiar = null, int pagina = 1) =>
+        Url.Action("Index", "Catalogo") + filtro.Consulta(cambiar, pagina);
 
     string TextoLecciones(int cantidad) => cantidad switch
     {
@@ -11,38 +22,103 @@
     };
 }
 
-<div class="encabezado-pagina">
-    <h1>Catálogo de cursos</h1>
-    <p class="text-muted mb-0">
-        @(Model.Total == 1 ? "1 curso gratuito" : Model.Total + " cursos gratuitos")@(string.IsNullOrEmpty(Model.Buscar) ? "" : " para “" + Model.Buscar + "”")
-    </p>
+<div class="encabezado-lista">
+    <div>
+        <h1>Catálogo de cursos</h1>
+        <p class="text-muted mb-0 mt-1">
+            @(Model.Total == 1 ? "1 curso gratuito" : Model.Total + " cursos gratuitos")@(string.IsNullOrEmpty(filtro.Buscar) ? "" : " para “" + filtro.Buscar + "”")
+        </p>
+    </div>
+    <div class="orden">
+        <span class="text-muted">Ordenar por</span>
+        @foreach (var (clave, texto) in FiltroCatalogo.Ordenes)
+        {
+            <a class="@(filtro.Orden == clave ? "activa" : "")" href="@(Enlace(f => f.Orden = clave))" aria-current="@(filtro.Orden == clave ? "true" : null)">@texto</a>
+        }
+    </div>
 </div>
 
 <div class="catalogo">
-    <aside class="lateral" aria-label="Filtros">
+    <aside class="lateral">
+        <details id="filtros" open>
+        <summary>Filtros</summary>
         <div class="grupo">
             <h2>Categoría</h2>
-            <a class="opcion-filtro @(Model.CategoriaId == null ? "activa" : "")" asp-action="Index" asp-route-buscar="@Model.Buscar">
+            <a class="opcion-filtro @(filtro.CategoriaId == null ? "activa" : "")" href="@(Enlace(f => f.CategoriaId = null))">
                 Todas <span class="cantidad">@Model.Categorias.Sum(c => c.Cantidad)</span>
             </a>
             @foreach (var categoria in Model.Categorias)
             {
-                <a class="opcion-filtro @(Model.CategoriaId == categoria.Id ? "activa" : "")" asp-action="Index" asp-route-categoriaId="@categoria.Id" asp-route-buscar="@Model.Buscar">
+                <a class="opcion-filtro @(filtro.CategoriaId == categoria.Id ? "activa" : "")" href="@(Enlace(f => f.CategoriaId = categoria.Id))">
                     <span class="text-capitalize">@categoria.Nombre</span> <span class="cantidad">@categoria.Cantidad</span>
                 </a>
             }
         </div>
-        @if (Model.Filtrado)
+
+        @if (nivelesVisibles.Any())
+        {
+            <div class="grupo">
+                <h2>Nivel</h2>
+                @foreach (var nivel in nivelesVisibles)
+                {
+                    var marcado = filtro.Niveles.Contains((int)nivel);
+                    <a class="opcion-casilla @(marcado ? "activa" : "")" href="@(Enlace(f => f.AlternarNivel((int)nivel)))" role="checkbox" aria-checked="@(marcado ? "true" : "false")">
+                        <span class="casilla"></span>
+                        <partial name="_MedidorNivel" model="nivel" />
+                        <span class="cantidad">@Model.ConteoNiveles.GetValueOrDefault(nivel)</span>
+                    </a>
+                }
+            </div>
+        }
+
+        @if (duracionesVisibles.Any())
+        {
+            <div class="grupo">
+                <h2>Duración</h2>
+                <div class="fichas">
+                    @foreach (var (clave, texto) in duracionesVisibles)
+                    {
+                        var activa = filtro.Duracion == clave;
+                        <a class="ficha @(activa ? "activa" : "")" href="@(Enlace(f => f.Duracion = activa ? null : clave))" aria-pressed="@(activa ? "true" : "false")">@texto</a>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (filtro.Activo)
         {
             <a class="limpiar-filtros" asp-action="Index">Limpiar filtros</a>
         }
+        </details>
     </aside>
 
     <section>
+        @if (filtro.Activo)
+        {
+            <div class="filtros-activos">
+                @if (!string.IsNullOrEmpty(filtro.Buscar))
+                {
+                    <a class="etiqueta-filtro" href="@(Enlace(f => f.Buscar = null))">“@filtro.Buscar”<span aria-hidden="true">&times;</span><span class="visually-hidden">Quitar la búsqueda</span></a>
+                }
+                @if (filtro.CategoriaId != null)
+                {
+                    <a class="etiqueta-filtro text-capitalize" href="@(Enlace(f => f.CategoriaId = null))">@Model.Categorias.FirstOrDefault(c => c.Id == filtro.CategoriaId)?.Nombre<span aria-hidden="true">&times;</span><span class="visually-hidden">Quitar la categoría</span></a>
+                }
+                @foreach (var nivel in filtro.Niveles)
+                {
+                    <a class="etiqueta-filtro" href="@(Enlace(f => f.AlternarNivel(nivel)))">@textosNivel[nivel]<span aria-hidden="true">&times;</span><span class="visually-hidden">Quitar el nivel</span></a>
+                }
+                @if (!string.IsNullOrEmpty(filtro.Duracion))
+                {
+                    <a class="etiqueta-filtro" href="@(Enlace(f => f.Duracion = null))">@FiltroCatalogo.Duraciones.First(d => d.Clave == filtro.Duracion).Texto<span aria-hidden="true">&times;</span><span class="visually-hidden">Quitar la duración</span></a>
+                }
+            </div>
+        }
+
         @if (!Model.Cursos.Any())
         {
-            <p>@(Model.Filtrado ? "No encontramos cursos con esos criterios." : "Todavía no hay cursos publicados.")</p>
-            @if (Model.Filtrado)
+            <p>@(filtro.Activo ? "No encontramos cursos con esos criterios." : "Todavía no hay cursos publicados.")</p>
+            @if (filtro.Activo)
             {
                 <a asp-action="Index" class="btn btn-outline-secondary">Ver todos los cursos</a>
             }
@@ -101,16 +177,16 @@
                 <nav class="mt-4" aria-label="Páginas del catálogo">
                     <ul class="pagination justify-content-center">
                         <li class="page-item @(Model.Pagina == 1 ? "disabled" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-pagina="@(Model.Pagina - 1)" asp-route-buscar="@Model.Buscar" asp-route-categoriaId="@Model.CategoriaId">Anterior</a>
+                            <a class="page-link" href="@(Enlace(pagina: Math.Max(1, Model.Pagina - 1)))">Anterior</a>
                         </li>
                         @for (var i = 1; i <= Model.TotalPaginas; i++)
                         {
                             <li class="page-item @(i == Model.Pagina ? "active" : "")">
-                                <a class="page-link" asp-action="Index" asp-route-pagina="@i" asp-route-buscar="@Model.Buscar" asp-route-categoriaId="@Model.CategoriaId">@i</a>
+                                <a class="page-link" href="@(Enlace(pagina: i))">@i</a>
                             </li>
                         }
                         <li class="page-item @(Model.Pagina == Model.TotalPaginas ? "disabled" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-pagina="@(Model.Pagina + 1)" asp-route-buscar="@Model.Buscar" asp-route-categoriaId="@Model.CategoriaId">Siguiente</a>
+                            <a class="page-link" href="@(Enlace(pagina: Math.Min(Model.TotalPaginas, Model.Pagina + 1)))">Siguiente</a>
                         </li>
                     </ul>
                 </nav>
@@ -118,3 +194,11 @@
         }
     </section>
 </div>
+
+@section Scripts {
+    <script>
+        if (window.matchMedia("(max-width: 991px)").matches) {
+            document.getElementById("filtros").open = false;
+        }
+    </script>
+}

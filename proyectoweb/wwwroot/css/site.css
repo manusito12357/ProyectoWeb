@@ -133,6 +133,16 @@ a:hover {
   background: linear-gradient(135deg, var(--azul), #8ab9f5);
 }
 
+.tarjeta-acceso {
+  max-width: 28rem;
+  margin: 2rem auto;
+}
+
+.tarjeta-acceso:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+}
+
 .card-footer {
   background-color: transparent;
   border-top-color: var(--borde);

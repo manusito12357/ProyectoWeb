@@ -4,13 +4,12 @@
     ViewData["Title"] = "Registrarse";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="card tarjeta-acceso">
+    <div class="card-body p-4">
+        <h1 class="h3 text-center">@ViewData["Title"]</h1>
+        <p class="text-center text-muted mb-4">Crea una cuenta nueva.</p>
 
-<div class="row">
-    <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Crea una cuenta nueva.</h2>
-            <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="nombre@ejemplo.com" />
@@ -29,6 +28,11 @@
             </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registrarse</button>
         </form>
+
+        <p class="text-center mt-4 mb-0">
+            ¿Ya tienes cuenta?
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Inicia sesión</a>
+        </p>
     </div>
 </div>
 

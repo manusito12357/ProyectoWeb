@@ -7,7 +7,6 @@ using proyectoweb.Models;
 
 namespace proyectoweb.Controllers
 {
-    [AllowAnonymous]
     public class CatalogoController : Controller
     {
         private const int CursosPorPagina = 9;
@@ -21,6 +20,7 @@ namespace proyectoweb.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index(FiltroCatalogo filtro, int pagina = 1)
         {
             filtro.Normalizar();
@@ -137,7 +137,7 @@ namespace proyectoweb.Controllers
             }
             return cursos;
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Detalles(int? id)
         {
             if (id == null)

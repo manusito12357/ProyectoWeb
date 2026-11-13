@@ -4,41 +4,61 @@
     ViewData["Title"] = "Cursos";
 }
 
-<h1>Cursos</h1>
-
-<p>
+<div class="encabezado-lista">
+    <h1>Cursos</h1>
     <a asp-action="Create" class="btn btn-primary">Nuevo curso</a>
-</p>
-<table class="table align-middle">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
-            <th>@Html.DisplayNameFor(model => model.Categoria)</th>
-            <th>@Html.DisplayNameFor(model => model.Nivel)</th>
-            <th>@Html.DisplayNameFor(model => model.DuracionMinutos)</th>
-            <th>@Html.DisplayNameFor(model => model.Publicado)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>@item.Titulo</td>
-            <td>@item.Categoria?.Nombre</td>
-            <td>@Html.DisplayFor(modelItem => item.Nivel)</td>
-            <td>@item.DuracionMinutos</td>
-            <td>@(item.Publicado ? "Publicado" : "Borrador")</td>
-            <td class="text-nowrap">
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-controller="Lecciones" asp-action="Index" asp-route-cursoId="@item.Id">Lecciones</a> |
-                <a asp-action="Inscritos" asp-route-id="@item.Id">Inscritos (@(item.Inscripciones?.Count ?? 0))</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-                <form asp-action="CambiarPublicacion" asp-route-id="@item.Id" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">@(item.Publicado ? "Despublicar" : "Publicar")</button>
-                </form>
-            </td>
-        </tr>
+</div>
+
+@if (!Model.Any())
+{
+    <p>Todavía no hay cursos. Crea el primero con el botón "Nuevo curso".</p>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+                    <th>@Html.DisplayNameFor(model => model.Categoria)</th>
+                    <th>@Html.DisplayNameFor(model => model.Nivel)</th>
+                    <th>@Html.DisplayNameFor(model => model.DuracionMinutos)</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+@foreach (var item in Model) {
+                <tr>
+                    <td>@item.Titulo</td>
+                    <td class="text-capitalize">@item.Categoria?.Nombre</td>
+                    <td><partial name="_EtiquetaNivel" model="item.Nivel" /></td>
+                    <td>@item.DuracionMinutos min</td>
+                    <td>
+                        @if (item.Publicado)
+                        {
+                            <span class="badge bg-success">Publicado</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Borrador</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="acciones">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalles</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a asp-controller="Lecciones" asp-action="Index" asp-route-cursoId="@item.Id" class="btn btn-sm btn-outline-secondary">Lecciones</a>
+                            <a asp-action="Inscritos" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Inscritos (@(item.Inscripciones?.Count ?? 0))</a>
+                            <form asp-action="CambiarPublicacion" asp-route-id="@item.Id" method="post">
+                                <button type="submit" class="btn btn-sm @(item.Publicado ? "btn-outline-warning" : "btn-outline-success")">@(item.Publicado ? "Despublicar" : "Publicar")</button>
+                            </form>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+}
+            </tbody>
+        </table>
+    </div>
+}

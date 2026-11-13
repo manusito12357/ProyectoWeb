@@ -152,6 +152,31 @@ a:hover {
   font-weight: 600;
 }
 
+.encabezado-lista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.encabezado-lista h1 {
+  margin-bottom: 0;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  min-width: 16rem;
+}
+
+.acciones form {
+  margin: 0;
+}
+
 .list-group-item {
   border-color: var(--borde);
 }

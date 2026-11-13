@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = Model.Titulo;
     var inscrito = ViewData["Inscrito"] is true;
+    var terminado = ViewData["Terminado"] is true;
     var lecciones = Model.Lecciones ?? new List<Leccion>();
 }
 
@@ -30,8 +31,17 @@
                 }
                 else if (inscrito)
                 {
-                    <p class="text-success">Ya estás inscrito en este curso.</p>
-                    <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="btn btn-primary w-100">Ir al curso</a>
+                    <p class="text-success">
+                        @if (terminado)
+                        {
+                            <span class="badge bg-success me-1">Terminado</span><text>Ya completaste este curso.</text>
+                        }
+                        else
+                        {
+                            <text>Ya estás inscrito en este curso.</text>
+                        }
+                    </p>
+                    <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@Model.Id" class="btn btn-primary w-100">@(terminado ? "Repasar el curso" : "Ir al curso")</a>
                 }
                 else if (User.IsInRole("Suscriptor") && Model.Publicado)
                 {

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Catálogo de cursos";
     var lecciones = (Dictionary<int, int>)ViewData["Lecciones"]!;
+    var misCursos = (Dictionary<int, bool>)ViewData["MisInscripciones"]!;
     var pagina = (int)ViewData["Pagina"]!;
     var totalPaginas = (int)ViewData["TotalPaginas"]!;
 
@@ -65,7 +66,13 @@ else
                         <p class="small text-muted mb-0">@curso.DuracionMinutos min &middot; @TextoLecciones(lecciones.GetValueOrDefault(curso.Id))</p>
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
-                        <partial name="_EtiquetaNivel" model="curso.Nivel" />
+                        <div>
+                            <partial name="_EtiquetaNivel" model="curso.Nivel" />
+                            @if (misCursos.TryGetValue(curso.Id, out var terminado))
+                            {
+                                <span class="badge @(terminado ? "bg-dark" : "bg-primary") ms-1">@(terminado ? "Terminado" : "Inscrito")</span>
+                            }
+                        </div>
                         <a asp-action="Detalles" asp-route-id="@curso.Id" class="btn btn-sm btn-primary">Ver curso</a>
                     </div>
                 </div>

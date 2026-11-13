@@ -60,6 +60,13 @@ namespace proyectoweb.Controllers
                 .Select(g => new { CursoId = g.Key, Cantidad = g.Count() })
                 .ToDictionaryAsync(g => g.CursoId, g => g.Cantidad);
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewData["MisInscripciones"] = userId == null
+                ? new Dictionary<int, bool>()
+                : await _context.Inscripciones
+                    .Where(i => i.UserId == userId && ids.Contains(i.CursoId))
+                    .ToDictionaryAsync(i => i.CursoId, i => i.FechaFinalizacion != null);
+
             return View(lista);
         }
 
@@ -81,7 +88,11 @@ namespace proyectoweb.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ViewData["Inscrito"] = userId != null && await _context.EstaInscrito(userId, curso.Id);
+            var inscripcion = userId == null
+                ? null
+                : await _context.Inscripciones.FirstOrDefaultAsync(i => i.UserId == userId && i.CursoId == curso.Id);
+            ViewData["Inscrito"] = inscripcion != null;
+            ViewData["Terminado"] = inscripcion?.FechaFinalizacion != null;
 
             return View(curso);
         }

@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var controlador = ViewContext.RouteData.Values["controller"]?.ToString();
+    string Activo(params string[] nombres) => nombres.Contains(controlador) ? "active" : "";
+}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -10,39 +14,42 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark barra-principal mb-4">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Catalogo" asp-action="Index">Microcursos</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand marca" asp-area="" asp-controller="Catalogo" asp-action="Index">
+                    <span class="marca-icono"></span>Microcursos
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal"
                         aria-expanded="false" aria-label="Mostrar menú">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="menuPrincipal">
+                    <form class="buscador-barra" asp-area="" asp-controller="Catalogo" asp-action="Index" method="get" role="search">
+                        <input type="search" name="buscar" value="@Context.Request.Query["buscar"]" class="form-control"
+                               placeholder="Buscar cursos por título" aria-label="Buscar cursos" maxlength="150" />
+                    </form>
+                    <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Catalogo" asp-action="Index">Catálogo</a>
+                            <a class="nav-link @Activo("Catalogo")" asp-area="" asp-controller="Catalogo" asp-action="Index">Catálogo</a>
                         </li>
                         @if (User.IsInRole("Suscriptor"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MisCursos" asp-action="Index">Mis cursos</a>
+                                <a class="nav-link @Activo("MisCursos")" asp-area="" asp-controller="MisCursos" asp-action="Index">Mis cursos</a>
                             </li>
                         }
                         @if (User.IsInRole("Administrador"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Panel" asp-action="Index">Panel</a>
+                                <a class="nav-link @Activo("Panel")" asp-area="" asp-controller="Panel" asp-action="Index">Panel</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
+                                <a class="nav-link @Activo("Cursos", "Lecciones")" asp-area="" asp-controller="Cursos" asp-action="Index">Cursos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Cursos" asp-action="Index">Cursos</a>
+                                <a class="nav-link @Activo("Categorias")" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
-                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

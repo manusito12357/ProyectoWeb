@@ -1,11 +1,7 @@
-@model IEnumerable<proyectoweb.Models.Curso>
+@model CatalogoViewModel
 
 @{
     ViewData["Title"] = "Catálogo de cursos";
-    var lecciones = (Dictionary<int, int>)ViewData["Lecciones"]!;
-    var misCursos = (Dictionary<int, bool>)ViewData["MisInscripciones"]!;
-    var pagina = (int)ViewData["Pagina"]!;
-    var totalPaginas = (int)ViewData["TotalPaginas"]!;
 
     string TextoLecciones(int cantidad) => cantidad switch
     {
@@ -15,88 +11,110 @@
     };
 }
 
-<section class="portada">
-    <h1>Aprende a tu ritmo</h1>
-    <p class="lead mb-0">Microcursos y tutoriales técnicos con lecciones cortas. Inscríbete gratis y sigue tu progreso.</p>
-</section>
+<div class="encabezado-pagina">
+    <h1>Catálogo de cursos</h1>
+    <p class="text-muted mb-0">
+        @(Model.Total == 1 ? "1 curso gratuito" : Model.Total + " cursos gratuitos")@(string.IsNullOrEmpty(Model.Buscar) ? "" : " para “" + Model.Buscar + "”")
+    </p>
+</div>
 
-<h2 class="h4 mb-3">Catálogo de cursos</h2>
-
-<form asp-action="Index" method="get" class="row g-2 mb-4">
-    <div class="col-12 col-md-auto">
-        <input type="search" name="buscar" value="@ViewData["Buscar"]" class="form-control" placeholder="Buscar por título" maxlength="150" />
-    </div>
-    <div class="col-12 col-md-auto">
-        <select name="categoriaId" class="form-select" asp-items="ViewBag.Categorias">
-            <option value="">Todas las categorías</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Buscar</button>
-        @if (ViewData["Filtrado"] is true)
+<div class="catalogo">
+    <aside class="lateral" aria-label="Filtros">
+        <div class="grupo">
+            <h2>Categoría</h2>
+            <a class="opcion-filtro @(Model.CategoriaId == null ? "activa" : "")" asp-action="Index" asp-route-buscar="@Model.Buscar">
+                Todas <span class="cantidad">@Model.Categorias.Sum(c => c.Cantidad)</span>
+            </a>
+            @foreach (var categoria in Model.Categorias)
+            {
+                <a class="opcion-filtro @(Model.CategoriaId == categoria.Id ? "activa" : "")" asp-action="Index" asp-route-categoriaId="@categoria.Id" asp-route-buscar="@Model.Buscar">
+                    <span class="text-capitalize">@categoria.Nombre</span> <span class="cantidad">@categoria.Cantidad</span>
+                </a>
+            }
+        </div>
+        @if (Model.Filtrado)
         {
-            <a asp-action="Index" class="btn btn-link">Limpiar</a>
+            <a class="limpiar-filtros" asp-action="Index">Limpiar filtros</a>
         }
-    </div>
-</form>
+    </aside>
 
-@if (!Model.Any())
-{
-    <p>@(ViewData["Filtrado"] is true ? "No se encontraron cursos con esos criterios." : "No hay cursos publicados por ahora.")</p>
-}
-else
-{
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var curso in Model)
+    <section>
+        @if (!Model.Cursos.Any())
         {
-            <div class="col">
-                <div class="card h-100">
-                    @if (!string.IsNullOrEmpty(curso.ImagenUrl))
-                    {
-                        <img src="@curso.ImagenUrl" class="card-img-top card-portada" alt="@curso.Titulo" />
-                    }
-                    else
-                    {
-                        <div class="card-portada card-portada-inicial">@curso.Titulo.Substring(0, 1).ToUpper()</div>
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">@curso.Titulo</h5>
-                        <h6 class="card-subtitle mb-2 text-muted text-capitalize">@curso.Categoria?.Nombre</h6>
-                        <p class="card-text">@(curso.Descripcion.Length > 140 ? curso.Descripcion[..140] + "..." : curso.Descripcion)</p>
-                        <p class="small text-muted mb-0">@curso.DuracionMinutos min &middot; @TextoLecciones(lecciones.GetValueOrDefault(curso.Id))</p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <div>
-                            <partial name="_EtiquetaNivel" model="curso.Nivel" />
-                            @if (misCursos.TryGetValue(curso.Id, out var terminado))
+            <p>@(Model.Filtrado ? "No encontramos cursos con esos criterios." : "Todavía no hay cursos publicados.")</p>
+            @if (Model.Filtrado)
+            {
+                <a asp-action="Index" class="btn btn-outline-secondary">Ver todos los cursos</a>
+            }
+        }
+        else
+        {
+            <div class="lista-cursos">
+                @foreach (var fila in Model.Cursos)
+                {
+                    var curso = fila.Curso;
+                    <article class="fila-curso">
+                        <div class="imagen-curso color-@(curso.Id % 5)">
+                            <span>@fila.Iniciales</span>
+                            @if (!string.IsNullOrEmpty(curso.ImagenUrl))
                             {
-                                <span class="badge @(terminado ? "bg-dark" : "bg-primary") ms-1">@(terminado ? "Terminado" : "Inscrito")</span>
+                                <img src="@curso.ImagenUrl" alt="" loading="lazy" onerror="this.remove()" />
                             }
                         </div>
-                        <a asp-action="Detalles" asp-route-id="@curso.Id" class="btn btn-sm btn-primary">Ver curso</a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    @if (totalPaginas > 1)
-    {
-        <nav class="mt-4" aria-label="Páginas del catálogo">
-            <ul class="pagination justify-content-center">
-                <li class="page-item @(pagina == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-pagina="@(pagina - 1)" asp-route-buscar="@ViewData["Buscar"]" asp-route-categoriaId="@ViewData["CategoriaId"]">Anterior</a>
-                </li>
-                @for (var i = 1; i <= totalPaginas; i++)
-                {
-                    <li class="page-item @(i == pagina ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-pagina="@i" asp-route-buscar="@ViewData["Buscar"]" asp-route-categoriaId="@ViewData["CategoriaId"]">@i</a>
-                    </li>
+                        <div>
+                            <h2 class="titulo-curso"><a asp-action="Detalles" asp-route-id="@curso.Id">@curso.Titulo</a></h2>
+                            <div class="datos-curso">
+                                <partial name="_MedidorNivel" model="curso.Nivel" />
+                                <span class="text-capitalize">@curso.Categoria?.Nombre</span>
+                                <span>@curso.DuracionMinutos min</span>
+                                <span>@TextoLecciones(fila.Lecciones)</span>
+                            </div>
+                            <p class="descripcion-curso">@curso.Descripcion</p>
+                        </div>
+                        <div class="lado-curso">
+                            @if (fila.Terminado)
+                            {
+                                <span class="estado-curso terminado">Terminado</span>
+                                <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@curso.Id" class="btn btn-outline-secondary">Repasar</a>
+                            }
+                            else if (fila.Inscrito)
+                            {
+                                <span class="estado-curso">@(fila.Lecciones == 0 ? "Inscrito" : "En curso, " + fila.Porcentaje + "%")</span>
+                                @if (fila.Lecciones > 0)
+                                {
+                                    <div class="progress"><div class="progress-bar" style="width: @(fila.Porcentaje)%"></div></div>
+                                }
+                                <a asp-controller="MisCursos" asp-action="Curso" asp-route-id="@curso.Id" class="btn btn-destacado">Continuar</a>
+                            }
+                            else
+                            {
+                                <span class="estado-curso">Gratis</span>
+                                <a asp-action="Detalles" asp-route-id="@curso.Id" class="btn btn-primary">Ver curso</a>
+                            }
+                        </div>
+                    </article>
                 }
-                <li class="page-item @(pagina == totalPaginas ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-pagina="@(pagina + 1)" asp-route-buscar="@ViewData["Buscar"]" asp-route-categoriaId="@ViewData["CategoriaId"]">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
-    }
-}
+            </div>
+
+            @if (Model.TotalPaginas > 1)
+            {
+                <nav class="mt-4" aria-label="Páginas del catálogo">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.Pagina == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-pagina="@(Model.Pagina - 1)" asp-route-buscar="@Model.Buscar" asp-route-categoriaId="@Model.CategoriaId">Anterior</a>
+                        </li>
+                        @for (var i = 1; i <= Model.TotalPaginas; i++)
+                        {
+                            <li class="page-item @(i == Model.Pagina ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-pagina="@i" asp-route-buscar="@Model.Buscar" asp-route-categoriaId="@Model.CategoriaId">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.Pagina == Model.TotalPaginas ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-pagina="@(Model.Pagina + 1)" asp-route-buscar="@Model.Buscar" asp-route-categoriaId="@Model.CategoriaId">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+    </section>
+</div>

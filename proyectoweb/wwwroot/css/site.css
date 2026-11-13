@@ -177,6 +177,27 @@ a:hover {
   background-color: var(--azul);
 }
 
+.leccion-contenido {
+  max-width: 45rem;
+  padding: 1.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  background-color: #fff;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.leccion-contenido img {
+  max-width: 100%;
+}
+
+.leccion-contenido pre {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #f1f5f9;
+  overflow-x: auto;
+}
+
 .footer {
   position: absolute;
   bottom: 0;

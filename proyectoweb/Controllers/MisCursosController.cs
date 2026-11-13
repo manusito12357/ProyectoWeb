@@ -83,6 +83,8 @@ namespace proyectoweb.Controllers
                 .ToListAsync();
             var posicion = ids.IndexOf(id);
 
+            ViewData["Posicion"] = posicion + 1;
+            ViewData["Total"] = ids.Count;
             ViewData["Anterior"] = posicion > 0 ? ids[posicion - 1] : (int?)null;
             ViewData["Siguiente"] = posicion < ids.Count - 1 ? ids[posicion + 1] : (int?)null;
             ViewData["Completada"] = (await LeccionesCompletadasDe(leccion.CursoId)).Contains(id);

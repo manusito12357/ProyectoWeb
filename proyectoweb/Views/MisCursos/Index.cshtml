@@ -15,15 +15,26 @@ else
     <div class="row row-cols-1 row-cols-md-2 g-4">
         @foreach (var item in Model)
         {
+            var terminado = item.Porcentaje == 100;
+
             <div class="col">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">@item.Curso.Titulo</h5>
-                        <p class="text-muted mb-2">@item.Completadas de @item.Total lecciones completadas</p>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: @(item.Porcentaje)%">@item.Porcentaje%</div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">@item.Curso.Titulo</h5>
+                            <partial name="_EtiquetaNivel" model="item.Curso.Nivel" />
                         </div>
-                        <a asp-action="Curso" asp-route-id="@item.Curso.Id" class="btn btn-primary btn-sm">@(item.Porcentaje == 100 ? "Repasar" : "Continuar")</a>
+                        <p class="text-muted mb-2">
+                            @item.Completadas de @item.Total lecciones completadas
+                            @if (terminado)
+                            {
+                                <span class="badge bg-success ms-1">Terminado</span>
+                            }
+                        </p>
+                        <div class="progress mb-3">
+                            <div class="progress-bar @(terminado ? "bg-success" : "")" role="progressbar" style="width: @(item.Porcentaje)%">@item.Porcentaje%</div>
+                        </div>
+                        <a asp-action="Curso" asp-route-id="@item.Curso.Id" class="btn btn-primary btn-sm">@(terminado ? "Repasar" : "Continuar")</a>
                     </div>
                 </div>
             </div>

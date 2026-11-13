@@ -2,30 +2,55 @@
 
 @{
     var curso = Model.Curso;
+    var lecciones = curso.Lecciones!;
     var completadas = (HashSet<int>)ViewData["Completadas"]!;
+    var proxima = lecciones.FirstOrDefault(l => !completadas.Contains(l.Id)) ?? lecciones.FirstOrDefault();
+    var terminado = Model.Porcentaje == 100;
     ViewData["Title"] = curso.Titulo;
 }
 
-<h1>@curso.Titulo</h1>
-<p>@curso.Descripcion</p>
+<div class="row g-4">
+    <div class="col-lg-4 order-first order-lg-last">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tu progreso</h5>
+                <p class="text-muted mb-2">@Model.Completadas de @Model.Total lecciones completadas</p>
+                <div class="progress mb-3">
+                    <div class="progress-bar @(terminado ? "bg-success" : "")" role="progressbar" style="width: @(Model.Porcentaje)%">@Model.Porcentaje%</div>
+                </div>
+                @if (proxima != null)
+                {
+                    <a asp-action="Leccion" asp-route-id="@proxima.Id" class="btn btn-primary w-100">@(terminado ? "Repasar desde el inicio" : "Continuar")</a>
+                }
+            </div>
+        </div>
+    </div>
 
-<p class="text-muted mb-1">@Model.Completadas de @Model.Total lecciones completadas</p>
-<div class="progress mb-4">
-    <div class="progress-bar" role="progressbar" style="width: @(Model.Porcentaje)%">@Model.Porcentaje%</div>
+    <div class="col-lg-8">
+        <h1>@curso.Titulo</h1>
+        <p class="lead">@curso.Descripcion</p>
+
+        <h4 class="mt-4">Lecciones</h4>
+        @if (!lecciones.Any())
+        {
+            <p>Este curso todavía no tiene lecciones.</p>
+        }
+        else
+        {
+            <ol class="list-group list-group-numbered mb-4">
+                @foreach (var leccion in lecciones)
+                {
+                    <li class="list-group-item d-flex align-items-center">
+                        <a asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
+                        @if (completadas.Contains(leccion.Id))
+                        {
+                            <span class="badge bg-success">Completada</span>
+                        }
+                    </li>
+                }
+            </ol>
+        }
+
+        <a asp-action="Index" class="btn btn-link ps-0">Volver a mis cursos</a>
+    </div>
 </div>
-
-<h4>Lecciones</h4>
-<ol class="list-group list-group-numbered mb-4">
-    @foreach (var leccion in curso.Lecciones!)
-    {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a asp-action="Leccion" asp-route-id="@leccion.Id">@leccion.Titulo</a>
-            @if (completadas.Contains(leccion.Id))
-            {
-                <span class="badge bg-success">Completada</span>
-            }
-        </li>
-    }
-</ol>
-
-<a asp-action="Index" class="btn btn-link">Volver a mis cursos</a>

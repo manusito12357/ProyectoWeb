@@ -1,0 +1,102 @@
+@model proyectoweb.Models.ResumenPanel
+
+@{
+    ViewData["Title"] = "Panel";
+}
+
+<div class="encabezado-lista">
+    <h1>Panel del administrador</h1>
+    <a asp-controller="Cursos" asp-action="Create" class="btn btn-primary">Nuevo curso</a>
+</div>
+
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Cursos</div>
+                <div class="display-6 fw-bold">@Model.Cursos</div>
+                <div class="small text-muted">@Model.Publicados publicados, @Model.Borradores en borrador</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Categorías</div>
+                <div class="display-6 fw-bold">@Model.Categorias</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Lecciones</div>
+                <div class="display-6 fw-bold">@Model.Lecciones</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Suscriptores</div>
+                <div class="display-6 fw-bold">@Model.Suscriptores</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Inscripciones</div>
+                <div class="display-6 fw-bold">@Model.Inscripciones</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Cursos terminados</div>
+                <div class="display-6 fw-bold">@Model.Terminados</div>
+                <div class="small text-muted">de @Model.Inscripciones inscripciones</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card card-estadistica h-100">
+            <div class="card-body">
+                <div class="text-muted small">Lecciones completadas</div>
+                <div class="display-6 fw-bold">@Model.LeccionesCompletadas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Cursos con más inscritos</h4>
+@if (!Model.Populares.Any())
+{
+    <p>Todavía no hay cursos.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Inscritos</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+@foreach (var curso in Model.Populares) {
+                <tr>
+                    <td>@curso.Titulo</td>
+                    <td>@curso.Inscritos</td>
+                    <td class="text-end">
+                        <a asp-controller="Cursos" asp-action="Inscritos" asp-route-id="@curso.Id" class="btn btn-sm btn-outline-secondary">Ver inscritos</a>
+                    </td>
+                </tr>
+}
+            </tbody>
+        </table>
+    </div>
+}

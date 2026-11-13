@@ -2,68 +2,41 @@
 
 @{
     ViewData["Title"] = "Eliminar curso";
+    var lecciones = (int)ViewData["Lecciones"]!;
+    var inscritos = (int)ViewData["Inscritos"]!;
+
+    string Cantidad(int n, string singular, string plural) => n == 1 ? "1 " + singular : n + " " + plural;
 }
 
-<h1>Eliminar</h1>
+<h1>Eliminar curso</h1>
 
-<h3>¿Seguro que quieres eliminarlo?</h3>
-<div>
-    <h4>Curso</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Titulo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Titulo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nivel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nivel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DuracionMinutos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DuracionMinutos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagenUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagenUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Publicado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Publicado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaCreacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaCreacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categoria.Nombre)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la lista</a>
-    </form>
+<div class="alert alert-danger">
+    <strong>Esta acción no se puede deshacer.</strong>
+    @if (lecciones > 0 || inscritos > 0)
+    {
+        <text>Se eliminará el curso junto con @Cantidad(lecciones, "lección", "lecciones") y @Cantidad(inscritos, "inscripción", "inscripciones"), incluido el progreso de esos suscriptores.</text>
+    }
+    else
+    {
+        <text>El curso no tiene lecciones ni inscritos.</text>
+    }
 </div>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Titulo)</dt>
+    <dd class="col-sm-9">@Model.Titulo</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Categoria)</dt>
+    <dd class="col-sm-9 text-capitalize">@Model.Categoria?.Nombre</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nivel)</dt>
+    <dd class="col-sm-9"><partial name="_EtiquetaNivel" model="Model.Nivel" /></dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DuracionMinutos)</dt>
+    <dd class="col-sm-9">@Model.DuracionMinutos min</dd>
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@(Model.Publicado ? "Publicado" : "Borrador")</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar curso</button>
+    <a asp-action="Index" class="btn btn-link">Cancelar</a>
+</form>

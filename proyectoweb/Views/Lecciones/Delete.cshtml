@@ -2,44 +2,38 @@
 
 @{
     ViewData["Title"] = "Eliminar lección";
+    var completadas = (int)ViewData["Completadas"]!;
 }
 
-<h1>Eliminar</h1>
+<h1>Eliminar lección</h1>
 
-<h3>¿Seguro que quieres eliminarlo?</h3>
-<div>
-    <h4>Leccion</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Titulo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Titulo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Contenido)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Contenido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Orden)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Orden)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Curso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Curso.Titulo)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la lista</a>
-    </form>
+<div class="alert alert-danger">
+    <strong>Esta acción no se puede deshacer.</strong>
+    @if (completadas == 0)
+    {
+        <text>Ningún suscriptor ha completado esta lección.</text>
+    }
+    else if (completadas == 1)
+    {
+        <text>1 suscriptor la había completado y perderá ese avance.</text>
+    }
+    else
+    {
+        <text>@completadas suscriptores la habían completado y perderán ese avance.</text>
+    }
 </div>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Titulo)</dt>
+    <dd class="col-sm-9">@Model.Titulo</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Curso)</dt>
+    <dd class="col-sm-9">@Model.Curso?.Titulo</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Orden)</dt>
+    <dd class="col-sm-9">@Model.Orden</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar lección</button>
+    <a asp-action="Index" asp-route-cursoId="@Model.CursoId" class="btn btn-link">Cancelar</a>
+</form>

@@ -175,6 +175,8 @@ namespace proyectoweb.Controllers
                 return NotFound();
             }
 
+            ViewData["Lecciones"] = await _context.Lecciones.CountAsync(l => l.CursoId == curso.Id);
+            ViewData["Inscritos"] = await _context.Inscripciones.CountAsync(i => i.CursoId == curso.Id);
             return View(curso);
         }
 

@@ -161,6 +161,7 @@ namespace proyectoweb.Controllers
                 return NotFound();
             }
 
+            ViewData["Completadas"] = await _context.LeccionesCompletadas.CountAsync(lc => lc.LeccionId == leccion.Id);
             return View(leccion);
         }
 

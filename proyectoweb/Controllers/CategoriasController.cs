@@ -114,6 +114,7 @@ namespace proyectoweb.Controllers
                 return NotFound();
             }
 
+            ViewData["Cursos"] = await _context.Cursos.CountAsync(c => c.CategoriaId == categoria.Id);
             return View(categoria);
         }
 

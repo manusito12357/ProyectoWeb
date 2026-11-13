@@ -50,7 +50,7 @@ else
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>
                             <a asp-controller="Lecciones" asp-action="Index" asp-route-cursoId="@item.Id" class="btn btn-sm btn-outline-secondary">Lecciones</a>
                             <a asp-action="Inscritos" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Inscritos (@(item.Inscripciones?.Count ?? 0))</a>
-                            <form asp-action="CambiarPublicacion" asp-route-id="@item.Id" method="post">
+                            <form asp-action="CambiarPublicacion" asp-route-id="@item.Id" method="post" onsubmit="@(item.Publicado ? "return confirm('¿Despublicar este curso? Dejará de verse en el catálogo.');" : null)">
                                 <button type="submit" class="btn btn-sm @(item.Publicado ? "btn-outline-warning" : "btn-outline-success")">@(item.Publicado ? "Despublicar" : "Publicar")</button>
                             </form>
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>

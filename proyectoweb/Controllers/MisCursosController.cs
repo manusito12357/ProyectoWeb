@@ -110,14 +110,32 @@ namespace proyectoweb.Controllers
 
             var yaCompletada = await _context.LeccionesCompletadas
                 .AnyAsync(lc => lc.UserId == userId && lc.LeccionId == id);
-            if (!yaCompletada)
+            if (yaCompletada)
             {
-                _context.LeccionesCompletadas.Add(new LeccionCompletada { UserId = userId, LeccionId = id });
-                await _context.SaveChangesAsync();
-                await MarcarFinalizacion(userId, leccion.CursoId);
+                return RedirectToAction(nameof(Leccion), new { id });
             }
 
-            return RedirectToAction(nameof(Leccion), new { id });
+            _context.LeccionesCompletadas.Add(new LeccionCompletada { UserId = userId, LeccionId = id });
+            await _context.SaveChangesAsync();
+
+            if (await MarcarFinalizacion(userId, leccion.CursoId))
+            {
+                TempData["Exito"] = "¡Terminaste el curso! Completaste todas las lecciones.";
+                return RedirectToAction(nameof(Curso), new { id = leccion.CursoId });
+            }
+
+            TempData["Exito"] = "Lección completada.";
+            var siguiente = await _context.Lecciones
+                .Where(l => l.CursoId == leccion.CursoId && l.Orden > leccion.Orden)
+                .OrderBy(l => l.Orden)
+                .Select(l => (int?)l.Id)
+                .FirstOrDefaultAsync();
+
+            if (siguiente == null)
+            {
+                return RedirectToAction(nameof(Curso), new { id = leccion.CursoId });
+            }
+            return RedirectToAction(nameof(Leccion), new { id = siguiente });
         }
 
         private async Task<HashSet<int>> LeccionesCompletadasDe(int cursoId)
@@ -130,13 +148,13 @@ namespace proyectoweb.Controllers
             return ids.ToHashSet();
         }
 
-        private async Task MarcarFinalizacion(string userId, int cursoId)
+        private async Task<bool> MarcarFinalizacion(string userId, int cursoId)
         {
             var total = await _context.Lecciones.CountAsync(l => l.CursoId == cursoId);
             var completadas = (await LeccionesCompletadasDe(cursoId)).Count;
             if (total == 0 || completadas < total)
             {
-                return;
+                return false;
             }
 
             var inscripcion = await _context.Inscripciones
@@ -146,6 +164,7 @@ namespace proyectoweb.Controllers
                 inscripcion.FechaFinalizacion = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
+            return true;
         }
     }
 }

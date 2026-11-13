@@ -57,7 +57,11 @@ namespace proyectoweb.Models
         {
             get
             {
-                var palabras = Titulo.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var palabras = (Titulo ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (palabras.Length == 0)
+                {
+                    return "";
+                }
                 var clave = palabras.FirstOrDefault(p => !PalabrasComunes.Contains(p.ToLower())) ?? palabras[0];
                 return clave.Length < 2 ? clave.ToUpper() : char.ToUpper(clave[0]) + clave.Substring(1, 1);
             }

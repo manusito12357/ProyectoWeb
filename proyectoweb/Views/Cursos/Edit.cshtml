@@ -5,17 +5,14 @@
 }
 
 <h1>Editar curso</h1>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="FechaCreacion" />
-            <partial name="_CamposCurso" />
-            <input type="submit" value="Guardar" class="btn btn-primary" />
-            <a asp-action="Index" class="btn btn-link">Volver a la lista</a>
-        </form>
-    </div>
+<div class="panel-admin">
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="FechaCreacion" />
+        <partial name="_CamposCurso" />
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-link">Volver a la lista</a>
+    </form>
 </div>
 
 @section Scripts {

@@ -24,10 +24,12 @@ else
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+<div class="panel-admin">
 <dl class="row">
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nombre)</dt>
     <dd class="col-sm-9 text-capitalize">@Model.Nombre</dd>
 </dl>
+</div>
 
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />

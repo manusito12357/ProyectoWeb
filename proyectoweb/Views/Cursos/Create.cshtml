@@ -5,15 +5,12 @@
 }
 
 <h1>Nuevo curso</h1>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <partial name="_CamposCurso" />
-            <input type="submit" value="Crear" class="btn btn-primary" />
-            <a asp-action="Index" class="btn btn-link">Volver a la lista</a>
-        </form>
-    </div>
+<div class="panel-admin">
+    <form asp-action="Create">
+        <partial name="_CamposCurso" />
+        <button type="submit" class="btn btn-primary">Crear</button>
+        <a asp-action="Index" class="btn btn-link">Volver a la lista</a>
+    </form>
 </div>
 
 @section Scripts {

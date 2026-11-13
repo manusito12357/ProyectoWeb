@@ -6,7 +6,7 @@
 
 <div class="encabezado-lista">
     <h1>Cursos</h1>
-    <a asp-action="Create" class="btn btn-primary">Nuevo curso</a>
+    <a asp-action="Create" class="btn btn-destacado">Nuevo curso</a>
 </div>
 
 <form asp-action="Index" method="get" class="row g-2 mb-3">
@@ -47,16 +47,16 @@ else
                 <tr>
                     <td>@item.Titulo</td>
                     <td class="text-capitalize">@item.Categoria?.Nombre</td>
-                    <td><partial name="_EtiquetaNivel" model="item.Nivel" /></td>
+                    <td><partial name="_MedidorNivel" model="item.Nivel" /></td>
                     <td>@item.DuracionMinutos min</td>
                     <td>
                         @if (item.Publicado)
                         {
-                            <span class="badge bg-success">Publicado</span>
+                            <span class="sello publicado">Publicado</span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Borrador</span>
+                            <span class="sello">Borrador</span>
                         }
                     </td>
                     <td>

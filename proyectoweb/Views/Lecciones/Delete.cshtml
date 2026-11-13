@@ -23,6 +23,7 @@
     }
 </div>
 
+<div class="panel-admin">
 <dl class="row">
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Titulo)</dt>
     <dd class="col-sm-9">@Model.Titulo</dd>
@@ -31,6 +32,7 @@
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Orden)</dt>
     <dd class="col-sm-9">@Model.Orden</dd>
 </dl>
+</div>
 
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />

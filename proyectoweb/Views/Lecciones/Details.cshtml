@@ -1,42 +1,23 @@
-@model proyectoweb.Models.Leccion
+﻿@model proyectoweb.Models.Leccion
 
 @{
     ViewData["Title"] = "Detalles de la lección";
 }
 
-<h1>Detalles</h1>
+<h1>Detalles de la lección</h1>
 
-<div>
-    <h4>Leccion</h4>
-    <hr />
+<div class="panel-admin">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Titulo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Titulo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Contenido)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Contenido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Orden)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Orden)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Curso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Curso.Titulo)
-        </dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Titulo)</dt>
+        <dd class="col-sm-9">@Model.Titulo</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Curso)</dt>
+        <dd class="col-sm-9">@Model.Curso?.Titulo</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Orden)</dt>
+        <dd class="col-sm-9">@Model.Orden</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Contenido)</dt>
+        <dd class="col-sm-9">@Model.Contenido</dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
-    <a asp-action="Index">Volver a la lista</a>
-</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+<a asp-action="Index" asp-route-cursoId="@Model.CursoId" class="btn btn-link">Volver a la lista</a>

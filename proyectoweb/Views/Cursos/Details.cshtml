@@ -6,24 +6,26 @@
 
 <h1>@Model.Titulo</h1>
 
+<div class="panel-admin">
 <dl class="row">
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Descripcion)</dt>
     <dd class="col-sm-9">@Model.Descripcion</dd>
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Categoria)</dt>
-    <dd class="col-sm-9">@Model.Categoria?.Nombre</dd>
+    <dd class="col-sm-9 text-capitalize">@Model.Categoria?.Nombre</dd>
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nivel)</dt>
-    <dd class="col-sm-9">@Html.DisplayFor(model => model.Nivel)</dd>
+    <dd class="col-sm-9"><partial name="_MedidorNivel" model="Model.Nivel" /></dd>
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DuracionMinutos)</dt>
-    <dd class="col-sm-9">@Model.DuracionMinutos</dd>
+    <dd class="col-sm-9">@Model.DuracionMinutos min</dd>
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ImagenUrl)</dt>
     <dd class="col-sm-9">@Model.ImagenUrl</dd>
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Publicado)</dt>
-    <dd class="col-sm-9">@(Model.Publicado ? "Publicado" : "Borrador")</dd>
+    <dd class="col-sm-9"><span class="sello @(Model.Publicado ? "publicado" : "")">@(Model.Publicado ? "Publicado" : "Borrador")</span></dd>
     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FechaCreacion)</dt>
     <dd class="col-sm-9">@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
 </dl>
+</div>
 
-<h4>Lecciones</h4>
+<h2 class="h4">Lecciones</h2>
 @if (Model.Lecciones == null || !Model.Lecciones.Any())
 {
     <p>Este curso todavía no tiene lecciones.</p>
@@ -39,7 +41,7 @@ else
 }
 
 <div>
-    <a asp-controller="Lecciones" asp-action="Create" asp-route-cursoId="@Model.Id" class="btn btn-primary">Agregar lección</a>
+    <a asp-controller="Lecciones" asp-action="Create" asp-route-cursoId="@Model.Id" class="btn btn-destacado">Agregar lección</a>
     <a asp-controller="Lecciones" asp-action="Index" asp-route-cursoId="@Model.Id" class="btn btn-outline-secondary">Administrar lecciones</a>
     <a asp-action="Inscritos" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Ver inscritos</a>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-link">Editar</a>

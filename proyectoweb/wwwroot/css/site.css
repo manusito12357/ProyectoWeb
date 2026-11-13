@@ -228,6 +228,12 @@ a:focus-visible,
 .tarjeta-acceso {
   max-width: 28rem;
   margin: 2rem auto;
+  border-top: 4px solid var(--pino);
+}
+
+.tarjeta-acceso .form-check-input:checked {
+  background-color: var(--pino);
+  border-color: var(--pino);
 }
 
 .encabezado-lista {

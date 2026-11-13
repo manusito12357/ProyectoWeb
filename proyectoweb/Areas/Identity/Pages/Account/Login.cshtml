@@ -22,18 +22,16 @@
                 <label asp-for="Input.Password" class="form-label"></label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
-            <div class="checkbox mb-3">
-                <label asp-for="Input.RememberMe" class="form-label">
-                    <input class="form-check-input" asp-for="Input.RememberMe" />
-                    @Html.DisplayNameFor(m => m.Input.RememberMe)
-                </label>
+            <div class="form-check mb-3">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <label class="form-check-label" asp-for="Input.RememberMe"></label>
             </div>
             <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Iniciar sesión</button>
         </form>
 
         <p class="text-center mt-4 mb-0">
             ¿No tienes cuenta?
-            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Regístrate</a>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Crear cuenta</a>
         </p>
     </div>
 </div>

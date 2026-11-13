@@ -23,7 +23,7 @@ namespace proyectoweb.Controllers
         {
             var userId = UserId;
             var cursos = await _context.Inscripciones
-                .Where(i => i.UserId == userId)
+                .Where(i => i.UserId == userId && i.Curso!.Publicado)
                 .OrderByDescending(i => i.FechaInscripcion)
                 .Select(i => new ProgresoCurso
                 {
@@ -51,7 +51,10 @@ namespace proyectoweb.Controllers
             {
                 return NotFound();
             }
-
+            if (!curso.Publicado)
+            {
+                return NotFound();
+            }
             var completadas = await LeccionesCompletadasDe(id);
             ViewData["Completadas"] = completadas;
 
@@ -70,7 +73,10 @@ namespace proyectoweb.Controllers
             {
                 return NotFound();
             }
-
+            if (leccion.Curso?.Publicado != true)
+            {
+                return NotFound();
+            }
             if (!await _context.EstaInscrito(UserId, leccion.CursoId))
             {
                 return Forbid();

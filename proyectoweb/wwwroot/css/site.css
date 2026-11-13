@@ -66,14 +66,11 @@ a:hover {
 }
 
 a:focus-visible,
-.btn:focus-visible {
+.btn:focus-visible,
+summary:focus-visible {
   outline: 3px solid var(--mandarina);
   outline-offset: 2px;
   box-shadow: none;
-}
-
-.bg-primary {
-  background-color: var(--pino) !important;
 }
 
 /* Botones */
@@ -160,11 +157,6 @@ a:focus-visible,
   border-radius: 0.75rem;
 }
 
-.card-footer {
-  background-color: transparent;
-  border-top-color: var(--borde);
-}
-
 .table {
   background-color: #fff;
   border-color: var(--borde);
@@ -180,22 +172,6 @@ a:focus-visible,
 }
 
 /* Listas, progreso y paginación */
-
-.list-group-item {
-  border-color: var(--borde);
-}
-
-.list-group-numbered > .list-group-item {
-  justify-content: flex-start;
-}
-
-.list-group-numbered > .list-group-item::before {
-  margin-right: 0.5rem;
-}
-
-.list-group-numbered > .list-group-item .badge {
-  margin-left: auto;
-}
 
 .progress {
   height: 1.25rem;
@@ -692,6 +668,10 @@ a:focus-visible,
 
 .panel-admin dl {
   margin-bottom: 0;
+}
+
+.panel-admin dd {
+  overflow-wrap: anywhere;
 }
 
 .panel-admin dt {

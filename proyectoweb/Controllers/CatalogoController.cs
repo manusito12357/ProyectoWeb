@@ -18,16 +18,24 @@ namespace proyectoweb.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int? categoriaId)
+        public async Task<IActionResult> Index(int? categoriaId, string? buscar)
         {
+            buscar = buscar?.Trim();
+
             var cursos = _context.Cursos.Include(c => c.Categoria).Where(c => c.Publicado);
             if (categoriaId != null)
             {
                 cursos = cursos.Where(c => c.CategoriaId == categoriaId);
             }
+            if (!string.IsNullOrEmpty(buscar))
+            {
+                cursos = cursos.Where(c => EF.Functions.Collate(c.Titulo, "Latin1_General_CI_AI").Contains(buscar));
+            }
 
             var categorias = await _context.Categorias.OrderBy(c => c.Nombre).ToListAsync();
             ViewData["Categorias"] = new SelectList(categorias, "Id", "Nombre", categoriaId);
+            ViewData["Buscar"] = buscar;
+            ViewData["Filtrado"] = categoriaId != null || !string.IsNullOrEmpty(buscar);
 
             return View(await cursos.OrderByDescending(c => c.FechaCreacion).ToListAsync());
         }

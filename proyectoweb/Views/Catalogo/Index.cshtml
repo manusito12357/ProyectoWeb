@@ -12,19 +12,26 @@
 <h2 class="h4 mb-3">Catálogo de cursos</h2>
 
 <form asp-action="Index" method="get" class="row g-2 mb-4">
-    <div class="col-auto">
+    <div class="col-12 col-md-auto">
+        <input type="search" name="buscar" value="@ViewData["Buscar"]" class="form-control" placeholder="Buscar por título" maxlength="150" />
+    </div>
+    <div class="col-12 col-md-auto">
         <select name="categoriaId" class="form-select" asp-items="ViewBag.Categorias">
             <option value="">Todas las categorías</option>
         </select>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        @if (ViewData["Filtrado"] is true)
+        {
+            <a asp-action="Index" class="btn btn-link">Limpiar</a>
+        }
     </div>
 </form>
 
 @if (!Model.Any())
 {
-    <p>No hay cursos publicados por ahora.</p>
+    <p>@(ViewData["Filtrado"] is true ? "No se encontraron cursos con esos criterios." : "No hay cursos publicados por ahora.")</p>
 }
 else
 {
